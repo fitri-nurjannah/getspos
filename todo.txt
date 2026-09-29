@@ -1,0 +1,2 @@
+- Remove other icon (mat-icon, fa-icon)
+- Remove unused css
