@@ -1,0 +1,84 @@
+<div [formGroup]="contentFormGroup" class="py-2">
+  <div class="flex flex-col gap-6">
+    
+    <!-- 1. Header: Status & Help -->
+    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+      <span class="text-sm font-medium text-gray-600">
+        <span class="text-blue-600 font-bold">{{ selectedItems.length }}</span> files selected
+      </span>
+      
+      <!-- Tooltip Container -->
+      <div class="group relative inline-flex items-center cursor-help">
+        <!-- Icon -->
+        <ng-icon name="lucideCircleHelp" size="18" class="text-gray-400 hover:text-blue-500 transition-colors">
+        </ng-icon>
+      
+        <!-- Tooltip Content -->
+        <div class="opacity-0 group-hover:visible group-hover:opacity-100 
+                    absolute z-50 transition-all duration-200 pointer-events-none
+                    top-8 right-[-10px] w-[75vw] max-w-[240px]
+                    sm:right-0 sm:w-64 sm:max-w-none">
+          
+          <!-- Tooltip Box -->
+          <div class="bg-gray-900 text-white text-[11px] sm:text-xs p-3 rounded-lg shadow-xl ring-1 ring-white/10">
+            <p class="leading-relaxed">
+              Accepted Files: Standard images, MP4, MP3, Maps Link, and YouTube Link.
+            </p>
+          </div>
+      
+          <!-- Tooltip Arrow (Responsive Position) -->
+          <div class="absolute -top-1 right-[14px] sm:right-1.5 w-2 h-2 bg-gray-900 rotate-45 border-t border-l border-white/10"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Draggable List Area -->
+    <div class="min-h-[100px]">
+      <template-dragable-items-list
+        [selectedItems]="selectedItems"
+        (selectedItemEmitter)="selectedItemsChange($event)"
+        [filesFG]="contentFormGroup"
+        (showSelectFilesModalEmitter)="showSelectFilesModal(false, sliderTypes, $event)"
+      ></template-dragable-items-list>
+    </div>
+
+    <hr class="border-gray-100" />
+
+    <!-- 3. Cover Image Section: Compact sizing -->
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+      <span class="text-xs sm:text-sm font-bold text-gray-700 sm:w-28 shrink-0">Cover Image</span>
+      
+      <!-- Box size reduced: max-w-[160px] on desktop -->
+      <div class="w-full max-w-[140px] sm:max-w-[160px]">
+        @if (!coverImageName || coverImageName == '') {
+          <div class="relative aspect-[3/2] w-full rounded-lg bg-gray-50 border-2 border-dashed border-gray-300 hover:border-blue-400 transition-all group">
+            <button
+              type="button"
+              class="size-full flex flex-col justify-center items-center gap-1 text-gray-400 group-hover:text-blue-500"
+              (click)="showSelectFilesModal(true, sliderTypes)" >
+              <ng-icon name="ionAddCircleOutline" size="20"></ng-icon>
+              <span class="text-[9px] font-bold uppercase tracking-tighter">Add Cover</span>
+            </button>
+          </div>
+        }
+
+        @if (coverImageName && coverImageName != '') {
+          <div class="relative group aspect-[3/2] w-full rounded-lg overflow-hidden shadow-sm border border-gray-200">
+            <img class="w-full h-full object-cover" [src]="'./assets/images/userFiles/' + coverImageName | domSecurePipe: 'resource'" alt="Cover Image">
+            <div 
+              (click)="removeCoverImage()" 
+              class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+              <ng-icon name="ionCloseCircleSharp" class="text-red-500" size="20"></ng-icon>
+              <span class="text-[10px] font-bold text-white uppercase">Remove</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex flex-col-reverse sm:flex-row gap-3 mt-8 sm:mt-4 items-center justify-between">
+  <button class="!w-full sm:!w-auto btn btn-black btn-md" cdkStepperPrevious>Back</button>
+  <button class="!w-full sm:!w-auto btn btn-primary btn-md" (click)="goToStep(1)">Next</button>
+</div>

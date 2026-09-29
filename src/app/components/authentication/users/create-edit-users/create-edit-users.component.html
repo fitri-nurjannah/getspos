@@ -1,0 +1,156 @@
+<ng-template #userDialogTemplate>
+  <div class="bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden w-full border border-gray-100">
+    
+    <!-- 1. Header with Brand Accent -->
+    <div class="relative h-2 bg-primary w-full shrink-0"></div>
+    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-offblack">
+          <ng-icon [name]="modalFor === 'create' ? 'heroUserPlus' : 'heroUser'" size="24"></ng-icon>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-gray-900 leading-none">
+            {{ modalFor == 'create' ? 'Add New User' : 'Manage User' }}
+          </h2>
+          <p class="text-xs text-gray-500 mt-1">Configure account access and subscription limits.</p>
+        </div>
+      </div>
+      <button (click)="closeDialog()" class="p-2 inline-flex items-center rounded-full hover:bg-gray-100 text-gray-400 transition-all">
+        <ng-icon name="heroXMark" size="20"></ng-icon>
+      </button>
+    </div>
+
+    <!-- 2. Form Body with Sectioned Layout -->
+    <div class="overflow-y-auto bg-gray-50/30">
+      @if (userForm) {
+        <form [formGroup]="userForm" (ngSubmit)="submitUserForm()" class="p-6 space-y-8">
+          
+          <!-- Section 1: Identity -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-sm">
+              <h3 class="font-bold text-gray-900">Identity</h3>
+              <p class="text-gray-500 text-xs">Primary contact details and login credentials.</p>
+            </div>
+            <div class="md:col-span-2 space-y-4">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Full Name</mat-label>
+                <input matInput formControlName="name" placeholder="John Doe" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Email Address</mat-label>
+                <input matInput formControlName="email" type="email" placeholder="john@example.com" />
+              </mat-form-field>
+
+              <div class="flex flex-col">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Account Password</mat-label>
+                  <input matInput formControlName="password" placeholder="••••••••" />
+                </mat-form-field>
+                <button type="button" (click)="setRandomPassword()" 
+                  class="text-[10px] text-indigo-600 font-bold uppercase tracking-wider hover:text-indigo-800 w-fit ml-auto -mt-4 mr-2 transition-colors">
+                  Generate Secure Key
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100"></div>
+
+          <!-- Section 2: Contact & Address -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-sm">
+              <h3 class="font-bold text-gray-900">Contact</h3>
+              <p class="text-gray-500 text-xs">Reach out and location details.</p>
+            </div>
+            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="phoneNo" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="address" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100"></div>
+
+          <!-- Section 3: Privileges -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-sm">
+              <h3 class="font-bold text-gray-900">Privileges</h3>
+              <p class="text-gray-500 text-xs">Control what this user can do.</p>
+            </div>
+            <div class="md:col-span-2 flex flex-wrap gap-4">
+              <div class="flex-1 min-w-[140px] p-3 rounded-lg border border-gray-200 bg-white hover:border-indigo-200 transition-all">
+                <mat-checkbox formControlName="isActive" color="primary" class="font-medium text-sm">Active</mat-checkbox>
+              </div>
+              <div class="flex-1 min-w-[140px] p-3 rounded-lg border border-gray-200 bg-white hover:border-indigo-200 transition-all">
+                <mat-checkbox formControlName="isAdmin" color="primary" class="font-medium text-sm">Admin</mat-checkbox>
+              </div>
+              <div class="flex-1 min-w-[140px] p-3 rounded-lg border border-gray-200 bg-white hover:border-indigo-200 transition-all">
+                <mat-checkbox formControlName="isEmailVerified" color="primary" class="font-medium text-sm">Verified</mat-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100"></div>
+
+          <!-- Section 4: Resource Limits -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-sm">
+              <h3 class="font-bold text-gray-900">Resource Limits</h3>
+              <p class="text-gray-500 text-xs">Hard caps for storage and display count.</p>
+            </div>
+            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Expiry Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="subscriptionExpDate" (focus)="picker.open()">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Sub Accounts</mat-label>
+                <input matInput type="number" formControlName="customLocations" />
+              </mat-form-field>
+
+              <div class="flex flex-col sm:col-span-2">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Storage Space (MB)</mat-label>
+                  <input matInput type="number" formControlName="customStorageSpace" />
+                  <span matSuffix class="text-xs text-gray-400 mr-2 uppercase">Megabytes</span>
+                </mat-form-field>
+                <button type="button" (click)="userForm.get('customStorageSpace').setValue('99999999')" 
+                  class="text-[10px] text-indigo-600 font-bold uppercase text-right -mt-4 mr-2 hover:underline">
+                  Set to Unlimited
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      }
+    </div>
+    <!-- 3. Footer with Action Buttons -->
+    <div class="px-6 py-4 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 justify-end border-t border-gray-100">
+      <button type="button" 
+        (click)="closeDialog()" 
+        class="!w-full sm:!w-fit btn btn-black p-btn-small">
+        Cancel
+      </button>
+      <button 
+        type="submit" 
+        (click)="submitUserForm()" 
+        class="!w-full sm:!w-fit btn btn-primary p-btn-small shadow-lg shadow-primary/20 transition-all"
+        [disabled]="userForm?.invalid || formSubmitting">
+        @if (formSubmitting) {
+          <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+        }
+        <span>{{ modalFor == 'create' ? 'Create Profile' : 'Save Profile' }}</span>
+      </button>
+    </div>
+  </div>
+</ng-template>

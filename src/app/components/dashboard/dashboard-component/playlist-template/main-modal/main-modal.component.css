@@ -1,0 +1,16 @@
+.p-stepper .p-stepper-nav {
+  overflow-x: unset;
+}
+.p-step:has(~ .p-step-active) .p-stepper-separator{
+  @apply bg-primary !important;
+}
+.p-stepper-separator {
+  display: none !important; /* Hides the separator */
+}
+.p-step{
+  @apply flex-initial !important;
+}
+.p-steplist {
+  @apply justify-start p-2 !important;
+  @apply border border-gray-200 rounded-lg shadow-sm;
+}

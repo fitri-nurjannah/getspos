@@ -1,0 +1,157 @@
+<!-- 1. Background Overlay -->
+<div
+  class="tw-modal fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+>
+  <!-- 2. Modal Card -->
+  <div
+    class="relative bg-white shadow-2xl rounded-2xl w-full flex flex-col overflow-hidden transition-all duration-300 max-h-[90vh]"
+    [ngClass]="numberOfBlocks > 1 ? 'max-w-5xl' : 'max-w-2xl'"
+  >
+    <!-- Close button -->
+    <button
+      (click)="closeModal(null)"
+      class="absolute top-4 right-4 z-50 text-gray-400 hover:text-gray-600 bg-white/80 rounded-full p-1 shadow-sm transition-colors"
+    >
+      <svg
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+
+    <!-- 3. Main Content Wrapper -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Left Block: HIDDEN ON MOBILE, smaller width on desktop -->
+      @if (numberOfBlocks > 1) {
+        <div
+          class="hidden lg:flex lg:w-56 xl:w-64 bg-gray-50 border-r border-gray-200 flex-col p-6 shrink-0"
+        >
+          <div class="flex-1">
+            <p
+              class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4"
+            >
+              Layout Template
+            </p>
+            <app-template-choice
+              (templateSelected)="onTemplateSelected($event)"
+              [currentTemplate]="selectedTemplate"
+            >
+            </app-template-choice>
+          </div>
+        </div>
+      }
+
+      <!-- Right Block: Stepper Form -->
+      <!-- Takes full width on mobile/tablet, remaining width on desktop -->
+      <div class="flex-1 overflow-y-auto custom-scrollbar">
+        <div
+          id="playlistTemplateForm"
+          class="flex flex-col h-full p-5 sm:p-8 md:p-10"
+        >
+          <header class="mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800">
+              {{ modalFor == "create" ? "Create" : "Edit" }} Playlist
+            </h2>
+            <!-- Optional: Mobile-only indicator that multiple blocks are being used -->
+            @if (numberOfBlocks > 1) {
+              <p class="lg:hidden text-xs font-medium text-primary mt-1">
+                Multi-block Layout Active
+              </p>
+            }
+          </header>
+
+          <app-custom-stepper #stepper>
+            <form [formGroup]="uploadForm" class="pb-10">
+              <cdk-step
+                [stepControl]="uploadForm.get('infoFG')"
+                errorMessage="Error in Basic Info"
+              >
+                <ng-template cdkStepLabel>Basic Info</ng-template>
+                <app-info-fg
+                  [comingSubAccountsArray]="subAccountsArray"
+                  [modalFor]="modalFor"
+                  [selectedPlaylist]="selectedPlaylist"
+                  [sliderTypes]="sliderTypes"
+                  [infoFG]="$any(uploadForm.get('infoFG'))"
+                >
+                </app-info-fg>
+              </cdk-step>
+
+              <cdk-step [stepControl]="contentsArray">
+                <ng-template cdkStepLabel>Content</ng-template>
+                <app-block-content
+                  (currentContent)="getCurrentContentNum($event)"
+                  (navigateToStep)="onNavigateToStep($event)"
+                  [modalFor]="modalFor"
+                  [mainForm]="uploadForm"
+                  [isSubmittingForm]="isSubmittingForm"
+                  (saveButtonClickEmitter)="saveButtonClicked($event)"
+                  [currentTemplate]="selectedTemplate"
+                  [numberOfBlocks]="numberOfBlocks"
+                >
+                </app-block-content>
+              </cdk-step>
+
+              <div [formArrayName]="'contents'">
+                @for (
+                  contentGroup of contentsArray.controls;
+                  track $index;
+                  let i = $index
+                ) {
+                  <div [formGroupName]="i">
+                    <cdk-step [stepControl]="contentGroup.get('dateGroup')">
+                      <ng-template cdkStepLabel>Config</ng-template>
+                      <app-date-time-fg
+                        [contentFormGroup]="$any(contentGroup.get('dateGroup'))"
+                        [currentContent]="i"
+                        [selectedPlaylist]="selectedPlaylist"
+                        [modalFor]="modalFor"
+                      >
+                      </app-date-time-fg>
+                    </cdk-step>
+
+                    <cdk-step [stepControl]="contentGroup.get('filesGroup')">
+                      <ng-template cdkStepLabel>Files</ng-template>
+                      <app-files-fg
+                        [contentFormGroup]="$any(contentGroup.get('filesGroup'))"
+                        [currentContent]="i"
+                        [selectedPlaylist]="selectedPlaylist"
+                        [modalFor]="modalFor"
+                        [sliderTypes]="sliderTypes"
+                        (saveButtonClickEmitter)="saveButtonClicked($any($event))"
+                        (navigateToStep)="onNavigateToStep($event)"
+                      ></app-files-fg>
+                    </cdk-step>
+                  </div>
+                }
+              </div>
+            </form>
+          </app-custom-stepper>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Responsive Image Preview (Hidden on mobile/tablet) -->
+<!-- Container: Changed from w-72 to w-fit/h-fit -->
+<div
+  id="img-preview"
+  class="hidden fixed z-[60] flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-2xl p-1 pointer-events-none transition-all duration-200 w-fit h-fit"
+>
+  <img
+    id="modal-img"
+    class="block w-auto h-auto max-w-[300px] lg:max-w-[450px] max-h-[60vh] object-contain rounded-xl"
+    alt="Preview"
+  />
+</div>

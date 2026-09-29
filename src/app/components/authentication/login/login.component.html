@@ -1,0 +1,122 @@
+<!-- First stage for the login -->
+@if (!isFirstStepCleared) {
+  <div class="flex min-h-full flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    
+    <!-- Container -->
+    <div class="w-full max-w-md space-y-8 text-center">
+      
+      <!-- Brand Logo Area -->
+      <div class="animate-in fade-in slide-in-from-top-4 duration-700">
+        <h1 class="text-4xl md:text-6xl text-gray-900 select-none">
+          GETSPOS
+        </h1>
+        <p class="mt-2 text-sm text-gray-500 font-medium uppercase tracking-widest text-primary">Admin Portal</p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100">
+        <form [formGroup]="loginForm" (ngSubmit)="submitForm()" class="space-y-5">
+          
+          <!-- Email Field -->
+          <div class="text-left">
+            <label for="emailInput" class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1 mb-1.5">Email Address</label>
+            <input 
+              id="emailInput" 
+              type="email" 
+              formControlName="email"
+              autocomplete="username"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none" 
+              placeholder="admin@example.com" 
+              required>
+          </div>
+
+          <!-- Password Field -->
+          <div class="text-left">
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1 mb-1.5">Password</label>
+            <input 
+              type="password" 
+              formControlName="password"
+              autocomplete="current-password"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none" 
+              placeholder="••••••••" 
+              required>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            [disabled]="disableForm()" 
+            class="btn primary w-full py-3.5 rounded-xl font-bold transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3">
+            @if (!formSubmitting) {
+              <span>Sign in</span>
+            } @else {
+              <div class="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>Authenticating...</span>
+            }
+          </button>
+        </form>
+
+        <!-- Links -->
+        <div class="mt-8 space-y-4">
+          <div class="flex items-center justify-center gap-2 text-sm">
+            <span class="text-gray-500">Forgot your credentials?</span>
+            <a routerLink="/forgot-password/get-email" class="text-primary font-bold hover:underline">Reset Password</a>
+          </div>
+          <!--
+          <div class="border-t border-gray-50 text-sm">
+            <span class="text-gray-500">Don't have an account?</span>
+            <button (click)="goToSignup()" class="ml-2 text-primary font-bold hover:underline">Create Account</button>
+          </div>
+          -->
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Second stage for the login (Subaccount Selection) -->
+@if (isFirstStepCleared) {
+  <div class="fixed inset-0 z-[1100] flex items-center justify-center bg-gray-50/80 backdrop-blur-md p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-white p-8 text-center animate-in zoom-in-95 duration-300">
+      
+      <div class="size-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+        <ng-icon name="heroUserGroup" size="32"></ng-icon>
+      </div>
+
+      <h3 class="text-2xl font-bold text-gray-900 mb-2">Identify Subaccount</h3>
+      <p class="text-sm text-gray-500 mb-8">Please select which account instance you would like to access today.</p>
+
+      <div class="space-y-6">
+        <!-- Native Styled Tailwind Select -->
+        <div class="relative w-full">
+          <select
+            [(ngModel)]="subAccountsSelectedArray"
+            (ngModelChange)="proceedSecondStage()"
+            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition appearance-none cursor-pointer"
+          >
+            @for (option of subAccountsOptionsArray; track option.name) {
+              <option [ngValue]="option">{{ option.name }}</option>
+            }
+          </select>
+          <!-- Down Arrow Chevron -->
+          <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+
+        <button 
+          (click)="proceedSecondStage()" 
+          [disabled]="formSubmitting || !subAccountsSelectedArray" 
+          class="btn btn-primary w-full py-3.5 rounded-xl font-bold shadow-lg shadow-blue-200 flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+          @if (!formSubmitting) {
+            <span>Enter Dashboard</span>
+          } @else {
+            <div class="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

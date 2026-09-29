@@ -1,0 +1,40 @@
+<div [formGroup]="infoFG" class="py-2 sm:py-4">
+  <!-- Responsive Grid: 1 column on mobile, 2 on desktop -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-1 sm:gap-2">
+    
+    <!-- Playlist Name -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Playlist Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        placeholder="Enter playlist name"
+        required />
+      <!-- ng-icon used as suffix -->
+      <ng-icon name="heroPencil" matSuffix class="text-gray-400 text-lg"></ng-icon>
+    </mat-form-field>
+
+    <!-- Accounts Selection -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Accounts</mat-label>
+      <mat-select formControlName="subAccountSelectedArray" multiple>
+        @for (sa of comingSubAccountsArray; track $index) {
+          @if (!sa.isSlave && sa.id != masterAccountId) {
+          <mat-option [value]="sa.id">
+            <span class="text-sm">{{ sa.name }}</span>
+          </mat-option>
+          }
+        }
+      </mat-select>
+      <!-- ng-icon used as suffix -->
+      <ng-icon name="heroUsers" matSuffix class="text-gray-400 text-lg"></ng-icon>
+      <mat-hint class="leading-tight text-[11px] sm:text-xs text-gray-500 !mt-2">Select target sub-accounts</mat-hint>
+    </mat-form-field>
+
+  </div>
+</div>
+
+<!-- Bottom Action Bar -->
+<div class="flex pt-4 sm:pt-2 justify-end">
+  <button class="!w-full sm:!w-auto btn btn-primary btn-md" cdkStepperNext>Next</button>
+</div>

@@ -1,0 +1,69 @@
+<div class="flex min-h-full flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md space-y-8 text-center">
+    
+    <div class="animate-in fade-in slide-in-from-top-4 duration-700">
+      <h1 class="text-4xl md:text-6xl text-gray-900 select-none">GETSPOS</h1>
+      <p class="mt-2 text-sm font-medium uppercase tracking-widest text-primary">Verification</p>
+    </div>
+
+    <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100">
+      <div class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900 uppercase">Verify Token</h2>
+        <p class="text-sm text-gray-500 mt-2 leading-relaxed">Check your email for the verification code.</p>
+      </div>
+
+      <div class="space-y-6">
+        <div class="text-left">
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1 mb-1.5">Verification Code</label>
+          <input 
+            [(ngModel)]="verifyToken" 
+            type="text" 
+            class="w-full rounded-xl border border-gray-200 px-4 py-4 text-center text-2xl font-bold tracking-[0.5em] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all" 
+            placeholder="Enter Code">
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <!-- Updated Resend Button Logic -->
+          <button 
+            type="button"
+            (click)="resendCode()" 
+            [disabled]="!isResendCodeButtonActive || isResendingCode" 
+            class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-all">
+            
+            <span>{{ isResendingCode ? 'Sending Email' : 'Resend Code' }}</span>
+            
+            @if (isResendingCode) {
+              <div class="size-3 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+            }
+
+            @if (!isResendCodeButtonActive && !isResendingCode) {
+              <span class="text-primary">{{ resendAnimatedTime | date:"mm:ss" }}</span>
+            }
+          </button>
+
+          <button (click)="verifyToken = ''" class="px-6 py-2.5 text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors">
+            Clear
+          </button>
+        </div>
+
+        <button 
+          (click)="checkVerificationCode()" 
+          [disabled]="verifyToken.length === 0 || checkingVerificationCode" 
+          class="btn primary w-full py-3.5 rounded-xl font-bold transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3">
+          
+          @if (checkingVerificationCode) {
+            <div class="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            <span>Verifying...</span>
+          } @else {
+            <span>Verify Account</span>
+          }
+        </button>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-50 text-sm">
+        <span class="text-gray-500">Back to safety?</span>
+        <a routerLink="/login" class="ml-1 text-primary font-bold hover:underline">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>

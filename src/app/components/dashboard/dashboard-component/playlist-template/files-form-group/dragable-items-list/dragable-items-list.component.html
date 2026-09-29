@@ -1,0 +1,138 @@
+<div cdkDropListGroup id="cdk-drag-boundary" class="w-full">
+  <!-- CDK Placeholder Logic -->
+  <div
+    cdkDropList
+    cdkDragBoundary="#cdk-drag-boundary"
+    (cdkDropListDropped)="drop($event)"
+    #placeholder
+  ></div>
+
+  <!-- Header: Select All & Remove -->
+  <div class="flex flex-col sm:flex-row sm:items-center bg-gray-50 p-2 sm:p-3 rounded-xl mb-4 border border-gray-100 gap-2 sm:gap-4">
+    
+    <!-- Left Side: Select All -->
+    <div class="w-full sm:w-auto">
+      <label 
+        for="selectAllCheckbox" 
+        class="flex items-center w-full bg-white sm:bg-transparent border border-gray-200 sm:border-0 p-3 sm:p-0 rounded-lg cursor-pointer group active:bg-gray-100 transition-colors">
+        <input
+          [checked]="allChecked"
+          [indeterminate]="partiallyComplete()"
+          (change)="updateCheckbox($event.target.checked)"
+          id="selectAllCheckbox"
+          type="checkbox" 
+          class="w-5 h-5 sm:w-4 sm:h-4 accent-blue-600 cursor-pointer shrink-0">
+        <span class="ms-3 text-sm font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">
+          Select All
+        </span>
+      </label>
+    </div>
+
+    <!-- Right Side: Remove Button -->
+    <button 
+      class="w-full sm:w-auto flex sm:flex-none inline-flex items-center justify-center sm:ml-auto gap-2 text-sm font-bold text-red-500 bg-red-50 sm:bg-transparent border border-red-100 sm:border-0 px-3 py-3 sm:py-2 sm:px-3 rounded-lg hover:bg-red-100 sm:hover:bg-red-50 transition-all"
+      (click)="removeMultipleSelectedItems()">
+      
+      <ng-icon name="heroTrash" size="1.2rem" class="shrink-0"></ng-icon>
+      
+      <span class="inline whitespace-nowrap">
+        Remove <span class="hidden sm:inline">Selected</span>
+      </span>
+    </button>      
+  </div>
+
+  <!-- Responsive Grid -->
+  <div cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="drop($event)">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      
+      <!-- ADD FILE BUTTON -->
+      <div class="aspect-[3/2] w-full border-2 border-dashed border-gray-300 rounded-xl bg-white hover:bg-gray-50 hover:border-blue-400 transition-all cursor-pointer group">
+        <button 
+          class="size-full flex flex-col justify-center items-center text-gray-400 group-hover:text-blue-500 transition-colors" 
+          (click)="showSelectFilesModal()">
+          <ng-icon name="ionAddCircleOutline" size="1.25rem"></ng-icon>
+          <span class="text-[10px] uppercase font-bold tracking-wider mt-1">Add File</span>
+        </button>
+      </div>
+
+      <!-- FILE ITEMS -->
+      @for (selectedItem of selectedItems; track $index; let i = $index) {
+      <div cdkDrag (cdkDragStarted)="userStartedDrag()" class="relative group">
+        
+        <!-- Drag Placeholder -->
+        <div class="w-full aspect-[3/2] border-2 border-dashed border-blue-400 bg-blue-50 rounded-xl" *cdkDragPlaceholder></div>
+        
+        <!-- Item Card -->
+        <div
+          id="hover-{{ i }}"
+          (mouseenter)="previewImage(selectedItem, i )"
+          (mouseleave)="closePreview()"
+          class="relative aspect-[3/2] w-full rounded-xl bg-gray-100 overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing">
+          
+          <!-- Image Content -->
+          <img 
+            class="w-full h-full object-cover" 
+            [src]="selectedItem | fileThumbnail | domSecurePipe: 'resource'" 
+            alt="Image">
+
+          <!-- Badge: Position Index (Mobile friendly) -->
+          <div class="sorted-position absolute top-2 left-2 flex items-center justify-center min-w-[20px] h-5 px-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded-full shadow-sm">
+            {{ i + 1 }}
+          </div>
+          
+          <!-- Checkbox Overlay -->
+          <div class="absolute top-2 right-2 z-10" [hidden]="dragStarted">
+            <div class="relative flex items-center">
+              <input
+                id="checkbox-{{ i }}"
+                [checked]="selectedItem.itemChecked"
+                (change)="updateCheckbox($event.target.checked, i)"
+                type="checkbox" 
+                class="fileCheckbox peer appearance-none w-5 h-5 rounded-full border-2 border-white/50 bg-black/20 checked:bg-blue-600 checked:border-blue-600 cursor-pointer transition-all shadow-sm">
+              
+              <!-- Checkmark icon for the custom checkbox -->
+              <ng-icon 
+                name="ionCheckmarkSharp" 
+                size="14" 
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity">
+              </ng-icon>
+            </div>
+          </div>
+
+          <!-- CALENDAR DATE PICKER SECTION -->
+          <div class="absolute bottom-2 right-2">
+            <!-- Clickable Button -->
+            <button 
+              type="button"
+              (click)="$event.stopPropagation(); datePicker.showPicker()"
+              class="flex items-center justify-center gap-1 min-w-[20px] h-5 px-1 bg-black/30 hover:bg-blue-600 backdrop-blur-md text-white rounded-full shadow-lg transition-all"
+              [ngClass]="{
+                'bg-black/30': !selectedItem.expiresAt,
+                'bg-green-600': selectedItem.expiresAt && $any(selectedItem).fileStatus === 'active',
+                'bg-red-600': selectedItem.expiresAt && $any(selectedItem).fileStatus === 'expired'
+              }">
+              
+              <ng-icon name="ionCalendarOutline" size="12"></ng-icon>
+              
+              <!-- Optional: Show selected date text if it exists -->
+              @if (selectedItem.expiresAt) {
+                <span class="text-[8px]">{{ selectedItem.expiresAt | date:'MMM d' }}</span>
+              }
+            </button>
+
+            <!-- Hidden Actual Input -->
+            <input 
+              #datePicker
+              type="date" 
+              class="absolute inset-0 opacity-0 w-0 h-0 pointer-events-none"
+              [value]="selectedItem.expiresAt"
+              (change)="onDateChange($event, i)"
+              (click)="$event.stopPropagation()"
+            />
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

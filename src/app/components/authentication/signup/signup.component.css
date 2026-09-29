@@ -1,0 +1,38 @@
+/* Password input styling starts */
+.ui-inputtext {
+    color: inherit !important;
+    border: 1px solid  rgba(120, 130, 140, 0.2) !important;
+    /* border-color:; */
+}
+
+.ui-inputtext:hover:active {
+    border: 1px solid #ced4da !important;
+}
+.ui-inputtext:not(.is-valid):not(.is-invalid):focus {
+    border-color: #53a6fa !important;;
+}
+.ui-inputtext:focus {
+    color: inherit !important;;
+    box-shadow: 0 0 0 0.2rem rgba(83, 166, 250, 0.25) !important;;
+}
+
+/* Password input styling ends */
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+ }
+
+form div.form-group label.col {
+    text-align: left !important;
+ }
+
+
+/* Hides the arrow buttons from input fields */
+/* for chrome */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;}
+/* for mozilla */
+input[type=number] {-moz-appearance: textfield;}
+

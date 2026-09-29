@@ -1,0 +1,40 @@
+<div class="tw-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+  <div class="relative w-full max-w-md md:max-w-lg mx-auto shadow-2xl rounded-2xl bg-white flex flex-col max-h-[90vh] overflow-hidden border">
+    <!-- Body -->
+    <div class="p-8 text-center">
+      <!-- Icon in a soft red circle -->
+      <div class="mx-auto w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
+        <ng-icon name="heroTrash" class="text-red-500 text-3xl"></ng-icon>
+      </div>
+      
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Are you sure?</h3>
+      <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+        You are about to delete <strong>{{ data.count }}</strong> item(s). This action cannot be undone.
+      </p>
+
+      <!-- Warning for folders -->
+      @if (data.containsFolder) {
+        <div class="bg-red-50 text-red-700 text-[11px] sm:text-xs p-3 rounded-lg border border-red-100 leading-snug flex items-start gap-2 text-left">
+          <ng-icon name="heroInformationCircle" size="16" class="shrink-0 mt-0.5"></ng-icon>
+          <span>
+            <strong>Important:</strong> Deleting a folder will also permanently remove all files and subfolders inside it.
+          </span>
+        </div>
+      }
+    </div>
+
+    <!-- Footer -->
+    <div class="px-5 sm:px-6 py-4 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 justify-end border-t border-gray-100">
+      <button 
+        (click)="dialogRef.close(false)"
+        class="!w-full sm:!w-fit btn btn-black !py-3 sm:!py-2 p-btn-small">
+        Cancel
+      </button>
+      <button 
+        (click)="dialogRef.close(true)"
+        class="!w-full sm:!w-fit btn btn-danger !bg-red-600 !text-white !py-3 sm:!py-2 p-btn-small shadow-lg shadow-red-500/20 active:scale-95 transition-all">
+        Delete Now
+      </button>
+    </div>
+  </div>
+</div>

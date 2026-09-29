@@ -1,0 +1,142 @@
+<!-- Legend Section (Responsive Widths) -->
+
+<div class="section-background">
+  <div class="content">
+    <div class="bg-transparent" id="content-body">
+      <div class="w-full" id="user-list">
+        <!-- Header -->
+        <div pTooltip="Manage sub accounts to control multiple computers!" class="flex justify-between items-center border-b pb-2">
+          <span class="text-lg text-offblack flex items-center gap-2">
+            Accounts
+            <ng-icon name="solarQuestionCircleBold" class="text-gray-400 cursor-help" pTooltip="Manage accounts to control multiple computers!"></ng-icon>
+          </span>
+          <button
+            routerLink="./create/null"
+            pTooltip="Add Account"
+            class="btn btn-primary !p-2"
+            >
+            <ng-icon name="heroPlus"></ng-icon>
+          </button>
+        </div>
+
+        <div class="flex justify-end mb-4 mt-2">
+          <div class="bg-white rounded border border-gray-100 px-3 py-1 shadow-sm">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-x-4 gap-y-1">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-orange-400"></span>
+                <span class="text-[11px] sm:text-sm font-medium text-gray-600 uppercase tracking-wider">Primary</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-amber-800"></span>
+                <span class="text-[11px] sm:text-sm font-medium text-gray-600 uppercase tracking-wider">Secondary</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- List Container -->
+        <div class="flex flex-col mt-4">
+          <div class="divide-y">
+            @for (subAccount of arrayOfSubAccounts; track $index) {
+              <ng-template
+                [ngTemplateOutlet]="subAccountListTemplate"
+                [ngTemplateOutletContext]="{ subAccount: subAccount }"
+              ></ng-template>
+              @for (slaveSubAccount of subAccount.slaveSubAccount; track $index) {
+                <ng-template
+                  [ngTemplateOutlet]="subAccountListTemplate"
+                  [ngTemplateOutletContext]="{ subAccount: slaveSubAccount }"
+                ></ng-template>
+              }
+            }
+
+            <!-- Empty State -->
+            @if (arrayOfSubAccounts.length == 0) {
+              <div class="py-10 text-center">
+                <p class="text-gray-500 italic">
+                  No Sub Account Available. Please Create One.
+                </p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Reusable Template -->
+<ng-template let-subAccount="subAccount" #subAccountListTemplate>
+  @if (subAccount.name !== 'master') {
+    <div class="flex items-center justify-between py-4 group hover:bg-gray-50/50 transition-colors px-2 w-full overflow-hidden flex-nowrap">
+      <!-- Info Section -->
+      <div class="flex items-center gap-3 w-0 flex-1 min-w-0">
+    
+        <!-- Avatar (Keep shrink-0 so it doesn't get crushed) -->
+        <span
+          [ngClass]="{
+            'bg-orange-400': !subAccount.isSlave,
+            'bg-amber-800 ml-4 sm:ml-12': subAccount.isSlave 
+          }"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-full inline-flex items-center justify-center text-white font-bold shrink-0 shadow-sm"
+        >
+          {{ subAccount.name[0] | uppercase }}
+        </span>
+    
+        <!-- Text Container -->
+        <!-- 'min-w-0' tells flexbox it's okay to be smaller than the text inside -->
+        <div class="flex flex-col w-full min-w-0 overflow-hidden">
+          
+          <!-- Name Row -->
+          <div class="flex items-center gap-1 min-w-0">
+            <a class="font-semibold text-gray-900 leading-tight truncate block">
+              {{ subAccount.name | titlecase }}
+            </a>
+            
+            @if (subAccount.name == 'master') {
+              <ng-icon 
+                name="solarQuestionCircleBold" 
+                class="text-gray-400 cursor-help shrink-0"
+                pTooltip="Master account is default...">
+              </ng-icon>
+            }
+          </div>
+          
+          <!-- Username Row -->
+          @if (subAccount.credential) {
+            <div class="text-xs sm:text-sm text-gray-500 mt-0.5 truncate block w-full">
+              <span class="text-ellipsis overflow-hidden text-gray-700 shrink-0">User:</span> 
+              {{ subAccount.credential?.username }}
+            </div>
+          }
+        </div>
+      </div>
+    
+      <!-- Options Button (Keep shrink-0) -->
+      @if (subAccount.name.toLowerCase() != 'master') {
+        <button
+          [matMenuTriggerFor]="menu"
+          class="inline-flex items-center text-gray-400 hover:text-gray-600 shrink-0 ml-2"
+        >
+          <ng-icon name="heroEllipsisVertical" size="20"></ng-icon>
+        </button>
+      }
+
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button (click)="routeToEdit(subAccount.id)" mat-menu-item>
+          <div class="flex items-center gap-2">
+            <ng-icon name="heroPencilSquare" class="mr-2"></ng-icon>
+            <span>Edit</span>
+          </div>
+        </button>
+        <button (click)="routeToDelete(subAccount.id)" mat-menu-item>
+          <div class="flex items-center gap-2 text-red-600">
+            <ng-icon name="heroTrash" class="mr-2"></ng-icon>
+            <span>Delete</span>
+          </div>
+        </button>
+      </mat-menu>
+    </div>
+  }
+</ng-template>
+
+<router-outlet></router-outlet>

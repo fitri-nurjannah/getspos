@@ -1,0 +1,127 @@
+<form #form method="post" name="ePayment" action="https://payment.ipay88.com.my/ePayment/entry.asp">
+  @if (checkoutDetails) {
+    <div>
+      <input type="hidden" name="MerchantCode" [value]="$safeNavigationMigration(checkoutDetails?.MerchantCode)">
+      <input type="hidden" name="PaymentId" [value]="">
+      <input type="hidden" name="RefNo" [value]="$safeNavigationMigration(checkoutDetails?.RefNo)">
+      <input type="hidden" name="Amount" [value]="$safeNavigationMigration(checkoutDetails?.Amount)">
+      <input type="hidden" name="Currency" [value]="$safeNavigationMigration(checkoutDetails?.Currency)">
+      <input type="hidden" name="ProdDesc" [value]="$safeNavigationMigration(checkoutDetails?.ProdDesc)">
+      <input type="hidden" name="UserName" [value]="$safeNavigationMigration(checkoutDetails?.UserName)">
+      <input type="hidden" name="UserEmail" [value]="$safeNavigationMigration(checkoutDetails?.UserEmail)">
+      <input type="hidden" name="UserContact" [value]="$safeNavigationMigration(checkoutDetails?.UserContact)">
+      <input type="hidden" name="Remark" [value]="">
+      <input type="hidden" name="Lang" [value]="'UTF-8'">
+      <input type="hidden" name="SignatureType" [value]="'SHA256'">
+      <input type="hidden" name="Signature" [value]="$safeNavigationMigration(checkoutDetails?.Signature)">
+      <input type="hidden" name="ResponseURL" [value]="$safeNavigationMigration(checkoutDetails?.ResponseURL)">
+      <input type="hidden" name="BackendURL" [value]="$safeNavigationMigration(checkoutDetails?.BackendURL)">
+      <!-- <input type="submit" (click)='form.submit()' value="Proceed with Payment" name="Submit"> -->
+    </div>
+  }
+</form>
+
+
+
+<div class="container">
+
+  <div class="padding">
+    <button class="btn btn-sm primary float-right" (click)='form.submit()'>Checkout</button>
+    <p style='height: 50px;'>
+      <!-- <img src="/assets/landingPageAssets/images/Logo-White-Text.png" alt="GETSPOS Logo"> -->
+    </p>
+    <div class="row">
+      <div class="col-6">
+        <h4 class="text-md">GETSPOS Inc.</h4>
+        <p><a href="http://www.getspos.com">www.getspos.com</a></p>
+        <p>
+          <!-- 1 Infinite Loop <br>
+          95014 Cuperino, CA<br>
+          United States -->
+        </p>
+        <p>
+          <!-- Telephone:  800-692-7753<br>
+          Fax:  800-692-7753 -->
+        </p>
+      </div>
+      <div class="col-6 text-right">
+        <p class="text-md mt-4">#{{ checkoutDetails?.RefNo }}</p>
+        <p>{{ $safeNavigationMigration(checkoutDetails?.OrderDate) | date: 'mediumDate'}}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="relative bg-white rounded-lg p-3">
+          <strong class="text-muted">PAYER DETAILS:</strong>
+          <h6>{{$safeNavigationMigration(user?.name) | titlecase}}</h6>
+          <p class="text-muted">
+            <span class='d-inline-block' style='width: 170px;'> <!-- Adding width to make the address in multiple lines-->
+              {{ user?.address }}
+            </span> <br>
+            Phone: {{user?.phoneNo ? user?.phoneNo : 'N/A'}}<br>
+            Email: {{user?.email}}<br>
+          </p>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <!-- <div class="relative bg-white rounded-lg p-3">
+        <strong class="text-muted">SHIP TO:</strong>
+        <h6>Jack Perez</h6>
+        <p class="text-muted">
+          2nd Floor<br>
+          St John Street, Aberdeenshire 2541<br>
+          United Kingdom<br>
+          Phone: 031-432-678<br>
+          Email: youemail@gmail.com<br>
+        </p>
+      </div> -->
+    </div>
+  </div>
+  <p>Order date: <strong>{{ $safeNavigationMigration(checkoutDetails?.OrderDate) | date: 'mediumDate'}}</strong><br>
+  Order ID (Reference Number): <strong>{{ checkoutDetails?.RefNo }}</strong>
+</p>
+<div class="table-responsive">
+  <table class="table table-striped white b-a">
+    <thead>
+      <tr>
+        <th style="width: 60px">SN</th>
+        <th>DESCRIPTION</th>
+        <th style="width: 140px">UNIT PRICE</th>
+        <th style="width: 140px">TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>{{ $safeNavigationMigration(checkoutDetails?.ProdDesc) | titlecase }}</td>
+        <td>{{ checkoutDetails?.Amount }} {{ checkoutDetails?.Currency }}</td>
+        <td>{{ checkoutDetails?.Amount }} {{ checkoutDetails?.Currency }}</td>
+      </tr>
+      <!-- <tr>
+      <td>2</td>
+      <td>iPad mini with Wi-Fi 32GB - White &amp; Silver</td>
+      <td>$429.00</td>
+      <td>$858.00</td>
+    </tr> -->
+    <!-- <tr>
+    <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+    <td>$1607.00</td>
+  </tr>
+  <tr>
+    <td colspan="3" class="text-right no-border"><strong>Shipping</strong></td>
+    <td>$0.00</td>
+  </tr> -->
+  <tr>
+    <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
+    <td>0.00 {{ checkoutDetails?.Currency }}</td>
+  </tr>
+  <tr>
+    <td colspan="3" class="text-right no-border"><strong>Total</strong></td>
+    <td><strong>{{ checkoutDetails?.Amount }} {{ checkoutDetails?.Currency }}</strong></td>
+  </tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+

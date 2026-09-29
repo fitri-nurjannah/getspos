@@ -1,0 +1,217 @@
+<div class="section-background">
+  <div class="content">
+    <div class="grid grid-cols-1 lg:grid-cols-[208px_1fr] h-screen w-full bg-gray-50 overflow-hidden rounded-2xl">
+      
+      <!-- Sidebar / Group Navigation -->
+      <aside class="bg-white lg:border-r border-gray-200 lg:h-full overflow-y-auto">
+        <div class="flex flex-col">
+          <div class="px-4 py-4 border-b border-gray-100 hidden lg:block">
+            <span class="text-base font-semibold text-gray-400">Groups</span>
+          </div>
+          <nav class="flex lg:flex-col overflow-x-auto p-1 lg:p-2 gap-1 no-scrollbar">
+  
+            <!-- All -->
+            <button (click)="changeUsersArray('all')" 
+              [ngClass]="groupOf === 'all' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+              class="flex items-center justify-between gap-4 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap lg:w-full cursor-pointer">
+              <span>All</span>
+              <app-badge [value]="getUsersArrayLength('all')" [variant]="groupOf === 'all' ? 'primary' : 'default'" />
+            </button>
+          
+            <div class="hidden lg:block my-1 border-t border-gray-100"></div>
+          
+            <!-- Users -->
+            <button (click)="changeUsersArray('user')" 
+              [ngClass]="groupOf === 'user' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+              class="flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap lg:w-full cursor-pointer">
+              <span>Users</span>
+              <app-badge [value]="getUsersArrayLength('user')" [variant]="groupOf === 'user' ? 'primary' : 'default'" />
+            </button>
+          
+            <!-- Admins -->
+            <button (click)="changeUsersArray('admin')" 
+              [ngClass]="groupOf === 'admin' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+              class="flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap lg:w-full cursor-pointer">
+              <span>Admins</span>
+              <app-badge [value]="getUsersArrayLength('admin')" [variant]="groupOf === 'admin' ? 'primary' : 'default'" />
+            </button>
+          
+            <!-- Active -->
+            <button (click)="changeUsersArray('active')" 
+              [ngClass]="groupOf === 'active' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+              class="flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap lg:w-full cursor-pointer">
+              <span>Active</span>
+              <app-badge [value]="getUsersArrayLength('active')" [variant]="groupOf === 'active' ? 'primary' : 'default'" />
+            </button>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="min-w-0 overflow-hidden flex flex-col h-full">
+        
+        <!-- Compact Header -->
+        <header class="flex-none bg-white border-b border-gray-200 px-4 flex justify-between items-center z-20">
+          <span class="text-base font-semibold text-gray-800 py-4">Users</span>
+          
+          <button 
+            class="btn btn-primary !p-2"
+            (click)="openCreateForm()"
+            title="Create New User">
+            <ng-icon name="lucideUserPlus" size="18"></ng-icon>
+          </button>
+        </header>
+
+        <!-- Content Body -->
+        <div class="flex-1 p-2 sm:p-4 min-w-0 min-h-0 flex flex-col overflow-hidden">
+          @if (usersArrayToShow.length > 0) {
+            <div class="flex-1 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col min-w-0 overflow-hidden">
+              
+              <!-- Semantic Native Tailwind Table -->
+              <div class="flex-1 w-full overflow-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-xs">
+                  <thead class="bg-gray-50 text-gray-600 font-semibold sticky top-0 z-10 select-none">
+                    <tr>
+                      <th class="w-12 px-3 py-3.5 text-center"></th> 
+                      <th (click)="sortBy('name')" class="px-4 py-3.5 text-left cursor-pointer hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center gap-1.5">
+                          <span>Name</span>
+                          @if (sortField === 'name') {
+                            <span class="text-purple-600">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+                          }
+                        </div>
+                      </th>
+                      <th (click)="sortBy('email')" class="px-4 py-3.5 text-left cursor-pointer hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center gap-1.5">
+                          <span>Email</span>
+                          @if (sortField === 'email') {
+                            <span class="text-purple-600">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+                          }
+                        </div>
+                      </th>
+                      <th (click)="sortBy('verified')" class="px-4 py-3.5 text-center cursor-pointer hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center gap-1.5">
+                          <span>Verified</span>
+                          @if (sortField === 'verified') {
+                            <span class="text-purple-600">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+                          }
+                        </div>
+                      </th>
+                      <th class="px-3 py-3.5 text-center">Admin</th>
+                      <th class="px-3 py-3.5 text-center">End Subscription</th>
+                      <th class="px-3 py-3.5 text-center">Sub Account</th>
+                      <th class="px-3 py-3.5 text-center">Space Usage</th>
+                      <th class="px-3 py-3.5 text-center">Active</th>
+                    </tr>
+                  </thead>
+
+                  <tbody class="divide-y divide-gray-100 bg-white">
+                    @for (user of paginatedUsers; track user.id) {
+                      <tr class="hover:bg-gray-50/70 transition-colors">
+                        <!-- Action Menu -->
+                        <td class="w-12 text-center px-2 py-3">
+                          <button [matMenuTriggerFor]="userMenu" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                            <ng-icon name="heroEllipsisVertical" size="18"></ng-icon>
+                          </button>
+                          <mat-menu #userMenu="matMenu">
+                            <button mat-menu-item (click)="openEditForm(user)">
+                              <div class="flex items-center">
+                                <ng-icon name="heroPencilSquare" class="mr-2 text-gray-500" size="18"></ng-icon>
+                                <span>Edit User</span>
+                              </div>
+                            </button>
+                            <button mat-menu-item (click)="openDeleteModal(user.id)" class="text-red-600">
+                              <div class="flex items-center">
+                                <ng-icon name="heroTrash" class="mr-2 text-red-500" size="18"></ng-icon>
+                                <span>Delete User</span>
+                              </div>
+                            </button>
+                          </mat-menu>
+                        </td>
+
+                        <td class="px-4 py-3 font-semibold text-gray-900">{{ user.name }}</td>
+                        <td class="px-4 py-3 text-gray-500 font-medium">{{ user.email }}</td>
+                        <td class="text-center px-3 py-3">
+                          <ng-icon [name]="user.isEmailVerified ? 'heroCheckCircle' : 'heroXCircle'" 
+                            [class]="user.isEmailVerified ? 'text-emerald-500' : 'text-gray-300'" size="20">
+                          </ng-icon>
+                        </td>
+                        <td class="text-center px-3 py-3">
+                          <ng-icon [name]="user.isAdmin ? 'heroCheckCircle' : 'heroXCircle'" 
+                            [class]="user.isAdmin ? 'text-emerald-500' : 'text-gray-300'" size="20">
+                          </ng-icon>
+                        </td>
+                        <td class="text-gray-500 font-medium text-center px-3 py-3">{{ user.subscribedPlan?.endDate || '-' }}</td>
+                        <td class="text-gray-500 font-medium text-center px-3 py-3">{{ ($any(user).locations || 1) }} / {{ user?.subscribedPlan?.plan?.numberOfDisplays || 0 }}</td>
+                        <td class="text-center px-3 py-3">
+                          <div class="flex flex-col gap-1 items-center">
+                            <span class="font-mono text-[10px] text-gray-500">
+                              {{ user.subscribedPlan?.usedSpaceInBytes / (1024 * 1024) | number:'1.0-0' }}MB / {{ user?.subscribedPlan?.plan?.storageSpace || 0 }}MB
+                            </span>
+                            <div class="w-20 bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                              <div class="bg-purple-600 h-full rounded-full" [style.width.%]="40"></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="text-center px-3 py-3">
+                          <div class="flex justify-center">
+                            <app-status-dot [status]="user.isActive" />
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Native Molecule: Pagination -->
+              <app-pagination
+                [totalRecords]="usersArrayToShow.length"
+                [(first)]="first"
+                [(rows)]="rows"
+              />
+
+            </div>
+          } @else {
+            <div class="flex-1 flex flex-col items-center justify-center bg-white rounded-2xl border border-dashed border-gray-200">
+              <ng-icon name="heroUsers" class="text-gray-300 text-5xl mb-2"></ng-icon>
+              <span class="text-sm text-gray-400 font-medium">No users found</span>
+            </div>
+          }
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Delete (CDK Dialog) -->
+<ng-template #deleteModal>
+  <div class="tw-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+    <div class="relative w-full max-w-md mx-auto shadow-2xl rounded-2xl bg-white flex flex-col overflow-hidden border border-gray-100 animate-in zoom-in-95 duration-150">
+      <div class="p-8 text-center">
+        <div class="mx-auto w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-4 text-rose-500">
+          <ng-icon name="heroTrash" size="32"></ng-icon>
+        </div>
+        
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Confirm Delete</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">
+          This user will be permanently removed from your network.
+        </p>
+      </div>
+      <div class="px-6 py-4 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 justify-end border-t border-gray-100">
+        <button 
+          (click)="dialogRef.close()"
+          class="btn btn-black !py-2 px-5 rounded-xl cursor-pointer">
+          Cancel
+        </button>
+        <button 
+          (click)="deleteUser()"
+          class="btn btn-danger !bg-rose-600 hover:!bg-rose-700 !text-white !py-2 px-5 rounded-xl shadow-lg shadow-rose-600/20 active:scale-95 transition cursor-pointer">
+          Delete Now
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<app-create-edit-users #createEditUserComponent (updateUsersList)="getUserList()"></app-create-edit-users>

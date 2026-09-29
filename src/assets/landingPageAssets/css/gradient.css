@@ -1,0 +1,67 @@
+::-webkit-scrollbar-track {background-color: #e9edf0;border-left: 1px solid #ededed;}
+::-webkit-scrollbar {width: 7px;background-color: #423f9c;}
+::-webkit-scrollbar-thumb {background: #423f9c;}
+
+.gradient,.about ul li:before,.tp-caption span,.icon-block:hover .counters h3, .icon-block:hover .counters h3 i  {
+    background: linear-gradient(to right, #00bcd4 0%, #00bcd4 93%)!important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+.slider-btn1,.custom-btn1 {
+    background: #00bcd4 !important;
+    border: 1px solid #00bcd4;
+}
+.tparrows.tp-leftarrow {
+    border-left: 3px solid #423f9c;
+}
+.tparrows.tp-rightarrow{
+    border-right: 3px solid #423f9c;
+}
+.top-center-logo .navbar-nav .text-black:hover, .top-fixed-nav .navbar-nav .whitecolor:hover, .top-center-logo .navbar-nav .whitecolor:hover,
+.breadcrumb .breadcrumb-item a,.breadcrumb .breadcrumb-item.active{
+    color: #862359 !important;
+}
+.navbar-nav .text-black.active:hover, .top-center-logo .navbar-nav .whitecolor.active:hover {
+    color: #FFFFFF !important;
+}
+.side-menu,.hr-line,.feature-box:before,.team-image,.team-image2,.hvr-team:before,.hvr-team2:before,.port-box,.back-top,
+.rare-box,.owl-testimonial .owl-dots .owl-dot.active span,.img-hvr:hover .date,.our-team .bg-gradient,.header-appear .side-logo-nav.bg-gradient,
+.bg-gradient,.pagination li.active > a,.webcats li a::before,.news_desc ul.rounded li::before,.widget_search .input-group-addon,
+.hvr-shutter-out-horizontal:before{
+    background: linear-gradient(to right, #423f9c 0%, #862359 93%);
+}
+#rev_slider_8_1_forcefullwidth .tp-bullet.selected, #rev_slider_8_1_forcefullwidth .tp-bullet:hover {
+    background: linear-gradient(to right, #423f9c 0%, #862359 93%)!important;
+}
+.custom-btn2:hover, .custom-btn2:active, .custom-btn2:focus {
+    border: 1px solid #423f9c;
+    color: #FFFFFF;
+}
+.cbp-l-grid-mosaic-flat .cbp-caption-activeWrap,.price-box:before {
+    background: linear-gradient(to right, rgba(66, 63, 156,0.88), rgba(134, 35, 89,0.88) 90%);
+}
+.port-box .btn:hover, .port-box .btn:focus,.top-fixed-nav .navbar-nav .nav-item:hover a,.news_desc h3:hover,
+.webcats li:hover, .webtags li:hover, .eny_profile h6:hover .single_post .text:hover,
+.button-play:hover i, .button-play:focus i ,.portfolio-three .filtering .active{
+    color: #423f9c;
+}
+.price-box .btn:hover, .price-box .btn:focus,.eny_profile .darkcolor:hover, .single_post:hover a{
+    color: #423f9c !important;
+}
+.button-play , .bg-counter-light .icon-counters:hover .img-icon,.portfolio-three .item-img-overlay:before,
+.testimonial-wrapp .quoted ,.testimonial-wrapp:hover .testimonial-text{
+    background: #423f9c;
+}
+.address,.back-top::before {
+    background: linear-gradient(to right, #862359 0%, #423f9c 93%);
+}
+#testimonial-slider .owl-item:nth-child(2n) .testimonial-wrapp .quoted, #testimonial-slider .owl-item:nth-child(2n) .testimonial-wrapp:hover .testimonial-text {
+    background: #862359;
+}
+#our-testimonial .owl-theme .owl-dots .owl-dot.active span, #our-testimonial .owl-theme .owl-dots .owl-dot:hover span {
+    background: #423f9c;
+    border: 1px solid #423f9c;
+}
+#our-testimonial .owl-theme .owl-dots .owl-dot span{
+    border: 1px solid #423f9c;
+}

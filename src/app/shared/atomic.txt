@@ -1,0 +1,1 @@
+This is the folder of completely atomic design system. This file is to be deleted after all component refactored to atomic design system.

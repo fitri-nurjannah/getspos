@@ -1,0 +1,178 @@
+@if (!hideElementsDueToInactivity) {
+  <button
+    type="button"
+    routerLink="/dashboard"
+    @enterAnimation
+    class="fixed top-4 right-4 sm:top-6 sm:right-6 z-[9999] flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center border-none rounded-full bg-black/40 text-white backdrop-blur-md hover:bg-black/80 hover:scale-110 transition-all duration-300 shadow-lg group">
+    <ng-icon name="heroXMark" size="1.5rem" class="group-hover:rotate-90 transition-transform duration-300"></ng-icon>
+  </button>
+}
+
+<div id="main-container" 
+  class="bg-black overflow-hidden flex border-2 border-grey rounded-lg"
+  [ngClass]="activePlaylist?.template === 'vertical' ? 'flex-col divide-y-2 divide-grey' : 'flex-row divide-x-2 divide-grey'">
+
+  <!-- BLOCK LOOP -->
+  @for (block of playlistBlocks; track block.id; let blockIndex = $index) {
+    <div 
+      class="relative overflow-hidden flex items-center justify-center bg-gray-900"
+      [style.width]="activePlaylist?.template === 'horizontal' ? (100 / playlistBlocks.length) + '%' : '100%'"
+      [style.height]="activePlaylist?.template === 'vertical' ? (100 / playlistBlocks.length) + '%' : '100%'"
+      cdkDropList 
+      (cdkDropListDropped)="drop($event, block, blockIndex)">
+
+      <!-- TOUCHSCREEN UI OVERLAY (Premium Design) -->
+      @if (block.isActiveSchedule) {
+        <div @enterAnimation class="absolute bottom-6 right-6 z-[100] flex flex-col items-end gap-4">
+          @if (block.playback === 'touchscreen') {
+            <!-- Interaction Hint (Sleek pill showing Touch is Active) -->
+            <div class="flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-2xl rounded-full border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]">
+              <div class="relative flex items-center justify-center">
+                <!-- Pulse effect for the dot -->
+                <span class="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75 animate-ping"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </div>
+              <span class="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em]">Touch Enabled</span>
+              <ng-icon name="heroFingerPrint" size="1.2rem" class="text-blue-400"></ng-icon>
+            </div>
+          }
+          <!-- Home Button (Modern Floating Button) -->
+          @if (block.currentIndex !== 0) {
+            <button
+              type="button"
+              (click)="goToHome(block, blockIndex)"
+              class="group flex items-center gap-3 pl-5 pr-4 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl rounded-2xl border border-white/20 transition-all duration-300 shadow-2xl active:scale-95">
+              <span class="text-xs font-bold text-white/90 tracking-wider group-hover:pr-1 transition-all">BACK TO START</span>
+              <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-white/10 group-hover:bg-blue-600 transition-colors">
+                <ng-icon name="heroHome" size="1.2rem" class="text-white"></ng-icon>
+              </div>
+            </button>
+          }
+        </div>
+      }
+      
+      <!-- Schedule Overlay -->
+      @if (!block.isActiveSchedule) {
+        <div class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm text-white p-6 text-center">
+          <div class="mb-4 text-gray-500 animate-pulse">
+            <div class="sm:hidden">
+              <ng-icon name="heroClock" size="64"></ng-icon>
+            </div>
+            <div class="hidden sm:block">
+              <ng-icon name="heroClock" size="96"></ng-icon>
+            </div>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold mb-2">Playlist Expired</h3>
+          <p class="text-sm sm:text-base text-gray-400 max-w-xs sm:max-w-md">
+            Action required: Please reschedule this block's content to resume playback.
+          </p>
+        </div>
+      }
+
+      <!-- ITEM LOOP -->
+      @for (item of block.items; track item.id; let i = $index) {
+        <div 
+          class="slide-item flex items-center justify-center bg-black"
+          [class.active]="block.currentIndex === i"
+          cdkDrag
+          [cdkDragDisabled]="block.playback === 'interval' || !block.playback" 
+          cdkDragLockAxis="x"
+          (cdkDragMoved)="onDragMoved($event, block)">
+          
+          <!-- Drag Placeholder -->
+          <div 
+            class="w-full h-full bg-cover bg-center bg-no-repeat opacity-50"
+            [style.background-image]="'url(' + itemPlaceholder + ')' | domSecurePipe: 'style'" 
+            *cdkDragPlaceholder>
+          </div>
+
+          <!-- 1. IMAGE -->
+          @if (item.type == 'image') {
+          <div class="w-full h-full bg-cover bg-center bg-no-repeat"
+            [style.background-image]="'url(./assets/images/userFiles/' + item.nameInDisk + ')' | domSecurePipe: 'style'">
+          </div>
+          }
+
+          <!-- 2. PDF -->
+          @if (item.type == 'pdf') {
+            @if (block.currentIndex === i) {
+            <div class="relative w-full h-full bg-white">
+              <app-pdf-slide
+                [src]="'/assets/images/userFiles/' + item.nameInDisk"
+                [page]="block.currentPdfPage || 1"
+                class="w-full h-full block"
+              />
+            </div>
+            }
+          }
+
+          <!-- 3. VIDEO -->
+          @if (item.type == 'video') {
+          <video
+            [id]="'video-' + blockIndex + '-' + i"
+            class="w-full h-full object-contain"
+            playsinline
+            #videoElem
+            [loop]="block.playback === 'touchscreen'" 
+            [attr.data-name]="item.nameInDisk">
+            <source [src]="'./assets/images/userFiles/' + item.nameInDisk" type="video/mp4" />
+          </video>
+          }
+
+          <!-- 4. YOUTUBE -->
+          @if (item.type === 'youtube') {
+          <div class="relative w-full h-full">
+            <div class="absolute inset-0 z-20 bg-transparent"></div>
+            @if (block.currentIndex === i) {
+            <youtube-player
+              [id]="'youtube-' + blockIndex + '-' + i"
+              #youtubePlayer
+              [videoId]="item.youtubeId"
+              placeholderImageQuality="high"
+              disablePlaceholder="true"
+              [playerVars]="playerConfig"
+              [width]="null" 
+              [height]="null"
+              class="w-full h-full block flex items-center justify-center"
+              (stateChange)="onYoutubeStateChange($event, block)"
+            ></youtube-player>
+            }
+          </div>
+          }
+
+          <!-- 5. AUDIO -->
+          @if (item.type == 'audio') {
+          <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-neutral-800 to-black text-white p-4">
+            <ng-icon name="heroMusicalNote" size="128" class="text-white/20 animate-pulse"></ng-icon>
+            <div class="mt-8 text-center">
+              <p class="text-sm uppercase tracking-widest text-gray-500 mb-4 font-bold">Now Playing Audio</p>
+              <audio 
+                [id]="'video-' + blockIndex + '-' + i"
+                autoplay
+                [loop]="block.playback === 'touchscreen'" 
+                #videoElem class="mx-auto">
+                <source [src]="'./assets/images/userFiles/' + item.nameInDisk" type="audio/mpeg">
+              </audio>
+            </div>
+          </div>
+          }
+
+          <!-- 6. GOOGLE MAP -->
+          @if (item.type === 'googleMap') {
+          <div class="relative w-full h-full">
+            <div class="absolute inset-0 z-[20001]"></div>
+            <iframe
+              [src]="item.iframeSrc | domSecurePipe: 'resource'"
+              class="border-0 z-[20000] w-full h-full"
+              allowfullscreen=""
+              aria-hidden="false"
+              tabindex="0"
+            ></iframe>
+          </div>
+          }
+          
+        </div>
+      }
+    </div>
+  }
+</div>

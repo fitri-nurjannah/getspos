@@ -1,0 +1,48 @@
+<ng-template #deleteDialogTemplate>
+  <div class="tw-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="relative w-full max-w-md md:max-w-lg mx-auto shadow-2xl rounded-2xl bg-white flex flex-col max-h-[90vh] overflow-hidden border">
+    
+      <!-- Body -->
+      <div class="p-6 sm:p-8 text-center">
+        <!-- Soft Red Circle Icon -->
+        <div class="mx-auto w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4 shrink-0">
+          <ng-icon name="heroTrash" class="text-red-500 text-3xl"></ng-icon>
+        </div>
+        
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Account?</h3>
+        
+        <p class="text-sm text-gray-500 leading-relaxed">
+          Are you sure you want to delete 
+          <strong class="text-gray-900">"{{ $safeNavigationMigration(subAccount?.name) | titlecase }}"</strong>? 
+          This action cannot be undone.
+        </p>
+
+        <!-- Warning for Primary Accounts -->
+        @if (subAccount && !subAccount.isSlave) {
+          <div class="mt-5 bg-amber-50 text-amber-700 text-[11px] sm:text-xs p-3 rounded-lg border border-amber-100 leading-snug flex items-start gap-2 text-left">
+            <ng-icon name="heroExclamationTriangle" size="16" class="shrink-0 mt-0.5"></ng-icon>
+            <span>
+              <strong>Warning:</strong> This is a Primary account. Deleting it will also remove all its linked Secondary accounts.
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Footer: Responsive Button Stack -->
+      <div class="px-5 sm:px-6 py-4 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 justify-end border-t border-gray-100">
+        <button 
+          type="button"
+          (click)="cancel()"
+          class="!w-full sm:!w-fit btn btn-black !py-3 sm:!py-2 p-btn-small">
+          Cancel
+        </button>
+        <button 
+          (click)="deleteSubAccount()"
+          class="!w-full sm:!w-fit btn btn-danger !bg-red-600 !text-white !py-3 sm:!py-2 p-btn-small shadow-lg shadow-red-500/20 active:scale-95 transition-all">
+          Delete Now
+        </button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>

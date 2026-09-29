@@ -1,0 +1,61 @@
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-white border-t border-slate-100 text-xs text-slate-500">
+  <!-- Showing text -->
+  <div>
+    Showing
+    <span class="font-semibold text-slate-800">{{ startRecord() }}</span>
+    to
+    <span class="font-semibold text-slate-800">{{ endRecord() }}</span>
+    of
+    <span class="font-semibold text-slate-800">{{ totalRecords() }}</span>
+    records
+  </div>
+
+  <!-- Controls (Rows per page & Navigation) -->
+  <div class="flex items-center gap-4">
+    <!-- Rows Selector -->
+    <div class="flex items-center gap-2">
+      <span>Rows:</span>
+      <select
+        [value]="rows()"
+        (change)="onRowsChange($any($event.target).value)"
+        class="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 focus:ring-1 focus:ring-purple-500 focus:outline-none cursor-pointer"
+      >
+        @for (option of rowsPerPageOptions(); track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Page Indicator -->
+    <span class="text-slate-400">
+      Page <span class="font-semibold text-slate-700">{{ currentPage() }}</span> of {{ totalPages() }}
+    </span>
+
+    <!-- Prev / Next Buttons -->
+    <div class="inline-flex items-center gap-1">
+      <button
+        type="button"
+        (click)="prevPage()"
+        [disabled]="!canPrev()"
+        class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+        aria-label="Previous Page"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="!canNext()"
+        class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+        aria-label="Next Page"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

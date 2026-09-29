@@ -1,0 +1,120 @@
+<!-- Fixed wrapper ensures no scrollbars and perfect centering -->
+<div class="fixed inset-0 flex flex-col items-center justify-center bg-gray-50 px-4 overflow-y-auto">
+  <div class="w-full max-w-2xl text-center py-8">
+
+    <!-- sign up verified -->
+    @if (messageAbout=="signupverified") {
+    <div class="animate-in fade-in zoom-in duration-300">
+      <h1 class="text-3xl font-extrabold tracking-tight text-indigo-600 sm:text-5xl mb-6">
+        Email verification succeeded
+      </h1>
+      <div class="text-lg text-gray-600">
+        <p>
+          Login to your account now!
+          <button routerLink="/login" class="ml-2 inline-flex items-center rounded-md bg-white px-3 py-1 text-sm font-semibold text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all">
+            Login
+          </button>
+        </p>
+      </div>
+    </div>
+    }
+
+    <!-- token expired -->
+    @if (messageAbout=="tokenexpired") {
+    <div class="animate-in fade-in zoom-in duration-300">
+      <h1 class="text-3xl font-extrabold tracking-tight text-red-600 sm:text-5xl mb-6">
+        Token Expired!
+      </h1>
+      <div class="text-lg text-gray-600">
+        <p>
+          Try to generate a new token.
+          <button routerLink="/login" class="ml-2 inline-flex items-center rounded-md bg-white px-3 py-1 text-sm font-semibold text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all">
+            Login
+          </button>
+        </p>
+      </div>
+    </div>
+    }
+
+    <!-- user not exist -->
+    @if (messageAbout=="usernotexist") {
+    <div class="animate-in fade-in zoom-in duration-300">
+      <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl mb-6">
+        User not found!
+      </h1>
+      <p class="text-lg text-gray-600">
+        User associated with this token not found. Sign up for a new account!
+        <button routerLink="/signup" class="ml-2 inline-flex items-center rounded-md bg-white px-3 py-1 text-sm font-semibold text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all">
+          Sign Up
+        </button>
+      </p>
+    </div>
+    }
+
+    <!-- wait for admin response -->
+    @if (messageAbout=="waitForAdminResponse") {
+    <div class="animate-in fade-in zoom-in duration-300 space-y-6">
+      <h1 class="text-3xl font-extrabold tracking-tight text-indigo-600 sm:text-4xl lg:text-5xl">
+        Thanks for Registering!
+      </h1>
+      <p class="mx-auto max-w-prose text-lg text-gray-600">
+        We will check your requirements and contact you for a price quote. Please be patient; it will not take long.
+      </p>
+      <button routerLink="/" class="inline-flex items-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 transition-all">
+        Go To Home Page
+      </button>
+    </div>
+    }
+
+    <!-- successful checkout -->
+    @if (messageAbout=="checkoutSuccessful") {
+    <div class="animate-in fade-in zoom-in duration-300 space-y-6">
+      <div class="flex justify-center mb-4">
+         <div class="rounded-full bg-green-100 p-3">
+            <svg class="h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+         </div>
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-indigo-600 sm:text-5xl">
+        We are Thankful for your Payment!
+      </h1>
+      <p class="mx-auto max-w-prose text-lg text-gray-600">
+        We know your money is precious and we work hard to prove you have spent it in the right place...
+      </p>
+      <button routerLink="/login" class="inline-flex items-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 transition-all">
+        Login to your account now!
+      </button>
+    </div>
+    }
+
+    <!-- checkout failed -->
+    @if (messageAbout=="checkoutFailed") {
+    <div class="animate-in fade-in zoom-in duration-300 space-y-6">
+      <h1 class="text-3xl font-extrabold tracking-tight text-red-600 sm:text-5xl">
+        Oops... Something Went Wrong!
+      </h1>
+      <p class="text-lg text-gray-600">
+        Something went wrong with the payment, please try again.
+      </p>
+      <button routerLink="/checkout" class="inline-flex items-center rounded-md bg-white px-6 py-3 text-base font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all">
+        Go Back to Checkout Page!
+      </button>
+    </div>
+    }
+
+    <!-- subscription expired -->
+    @if (messageAbout=="subscriptionExpired") {
+    <div class="animate-in fade-in zoom-in duration-300 space-y-6">
+      <h1 class="text-3xl font-extrabold tracking-tight text-amber-600 sm:text-5xl">
+        Your Account is Expired
+      </h1>
+      <p class="text-lg text-gray-600">
+        Your account's subscription date has passed. Please consult the admin or upgrade your account.
+      </p>
+      <button routerLink="/" class="inline-flex items-center rounded-md bg-gray-900 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-gray-800 transition-all">
+        Go To Home Page!
+      </button>
+    </div>
+    }
+
+  </div>
+</div>

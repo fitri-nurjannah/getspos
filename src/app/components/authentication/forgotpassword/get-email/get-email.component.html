@@ -1,0 +1,67 @@
+<div class="flex min-h-full flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+  
+  <!-- Container -->
+  <div class="w-full max-w-md space-y-8 text-center">
+    
+    <!-- Brand Logo Area -->
+    <div class="animate-in fade-in slide-in-from-top-4 duration-700">
+      <a routerLink="/" class="inline-block">
+        <h1 class="text-4xl md:text-6xl text-gray-900 select-none">
+          GETSPOS
+        </h1>
+      </a>
+      <p class="mt-2 text-sm font-medium uppercase tracking-widest text-primary">Account Recovery</p>
+    </div>
+
+    <!-- Card Container -->
+    <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100">
+      
+      <!-- Instructional Header -->
+      <div class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900">Forgot password?</h2>
+        <p class="text-sm text-gray-500 mt-2 leading-relaxed">
+          Enter your email below and we will send you instructions on how to change your password.
+        </p>
+      </div>
+
+      <!-- Form Section -->
+      <div class="space-y-6">
+        
+        <!-- Email Field -->
+        <div class="text-left">
+          <label for="emailInput" class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1 mb-1.5">Email Address</label>
+          <input 
+            [(ngModel)]="email" 
+            id="emailInput" 
+            type="email" 
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none" 
+            placeholder="Enter your registered email" 
+            required>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          (click)="submit()" 
+          [disabled]="submitting || !email" 
+          class="btn primary w-full py-3.5 rounded-xl font-bold transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3">
+          
+          @if (submitting) {
+            <div class="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            <span>Sending...</span>
+          } @else {
+            <span>Send Instructions</span>
+          }
+        </button>
+      </div>
+
+      <!-- Footer Link -->
+      <div class="mt-8 pt-6 border-t border-gray-50 text-sm">
+        <span class="text-gray-500">Suddenly remembered?</span>
+        <a routerLink="/login" class="ml-1 text-primary font-bold hover:underline">
+          Return to Sign in
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>

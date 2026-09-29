@@ -1,0 +1,222 @@
+
+<div class="d-flex flex-column flex">
+  <div class="navbar light bg pos-rlt box-shadow">
+    <div class="mx-auto">
+      <!-- brand -->
+      <a href="/" class="navbar-brand">
+        <!-- <svg viewBox="0 0 24 24" height="28" width="28" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0h24v24H0z" fill="none"/>
+        <path d="M19.51 3.08L3.08 19.51c.09.34.27.65.51.9.25.24.56.42.9.51L20.93 4.49c-.19-.69-.73-1.23-1.42-1.41zM11.88 3L3 11.88v2.83L14.71 3h-2.83zM5 3c-1.1 0-2 .9-2 2v2l4-4H5zm14 18c.55 0 1.05-.22 1.41-.59.37-.36.59-.86.59-1.41v-2l-4 4h2zm-9.71 0h2.83L21 12.12V9.29L9.29 21z" fill="#fff" class="fill-theme"/>
+      </svg>
+      <img src="/assets/images/logo.png" alt="." class="hide"> -->
+      <span class="hidden-folded d-inline">GETSPOS</span>
+
+      <!-- <img src="/assets/landingPageAssets/images/Logo-White-Text.png"> -->
+    </a>
+    <!-- / brand -->
+  </div>
+</div>
+<div id="content-body">
+  <div class="py-5 text-center w-100">
+    <div class="mx-auto w-xxl w-auto-xs">
+      <div class="px-3">
+        <!-- <div>
+        <a href="#" class="btn btn-block indigo text-white mb-2">
+          <i class="fa fa-facebook float-left"></i>
+          Sign up with Facebook
+        </a>
+        <a href="#" class="btn btn-block red text-white">
+          <i class="fa fa-google-plus float-left"></i>
+          Sign up with Google+
+        </a>
+      </div>
+      <div class="my-3 text-sm">
+        OR
+      </div> -->
+
+      <form [formGroup]="frmSignup" (submit)="submit()">
+        <!-- name -->
+        <div class="form-group">
+          <!-- <label for="email" [ngClass]="frmSignup.controls['email'].invalid ? 'text-danger' : ''">Email Address</label> -->
+          <input formControlName="name" type="text" class="form-control" placeholder="Name">
+          @if (frmSignup.controls['name'].touched && !frmSignup.controls['name'].valid) {
+            <div class="mr-top" [@enterAnimation]>
+              <label class="col text-danger mr-bottom-remove">
+                Name is Required!
+              </label>
+            </div>
+          }
+        </div>
+
+        <!-- email -->
+        <div class="form-group">
+
+          <input id="email" formControlName="email" type="email" class="form-control" placeholder="Email">
+
+          @if (frmSignup.controls['email'].touched) {
+            <div class="mr-top">
+              @if (frmSignup.controls["email"].hasError("required")) {
+                <label class="col text-danger mr-bottom-remove" [@enterAnimation]>
+                  Email is Required!
+                </label>
+              }
+              @if (frmSignup.controls['email'].hasError('email')) {
+                <label class="col text-danger mr-bottom-remove" [@enterAnimation]>
+                  Enter a valid email address!
+                </label>
+              }
+            </div>
+          }
+        </div>
+        <!-- phone no -->
+        <div class="form-group">
+
+          <input id="phoneNo" formControlName="phoneNo" type="text" class="form-control" placeholder="Phone Number">
+
+          @if (frmSignup.controls['phoneNo'].touched) {
+            <div class="mr-top">
+              @if (!frmSignup.controls["phoneNo"].valid) {
+                <label class="col text-danger mr-bottom-remove" [@enterAnimation]>
+                  Phone Number is Required!
+                </label>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- address -->
+        <div class="form-group">
+
+          <input id="address" formControlName="address" type="text" class="form-control" placeholder="Address">
+
+          <!-- <div class="mr-top" *ngIf="frmSignup.controls['address'].touched">
+          <label class="col text-danger mr-bottom-remove" *ngIf='!frmSignup.controls["address"].valid' [@enterAnimation]>
+            Address is Required!
+          </label>
+        </div> -->
+      </div>
+
+      <!-- password -->
+      <div class="form-group">
+        <input formControlName="password" type="password" class="form-control" placeholder="Password">
+        @if (frmSignup.controls['password'].dirty || frmSignup.controls['password'].touched) {
+          <div class="mr-top" [@enterAnimation]>
+            <!-- custom labels -->
+            <label class="col" [ngClass]="frmSignup.controls['password'].hasError('required') || frmSignup.controls['password'].hasError('minlength')  ? 'text-danger' : 'text-success'">
+                  <i class="fa fa-{{ frmSignup.controls['password'].hasError('required') ||
+                    frmSignup.controls['password'].hasError('minlength') ? 'times' :
+                    'check' }}"></i>
+              Must be at least 8 characters!
+            </label>
+            <!-- <label class="col" [ngClass]="frmSignup.controls['password'].hasError('required') || frmSignup.controls['password'].hasError('hasNumber')  ? 'text-danger' : 'text-success'">
+                  <i class="fa fa-{{ frmSignup.controls['password'].hasError('required') ||
+                    frmSignup.controls['password'].hasError('hasNumber') ? 'times' :
+                    'check' }}"></i>
+            Must contain at least 1 number!
+          </label>
+          <label class="col" [ngClass]="frmSignup.controls['password'].hasError('required') || frmSignup.controls['password'].hasError('hasCapitalCase')  ? 'text-danger' : 'text-success'">
+                  <i class="fa fa-{{ frmSignup.controls['password'].hasError('required') ||
+                    frmSignup.controls['password'].hasError('hasCapitalCase') ? 'times' :
+                    'check' }}"></i>
+            Must contain at least 1 in Capital Case!
+          </label>
+          <label class="col" [ngClass]="frmSignup.controls['password'].hasError('required') || frmSignup.controls['password'].hasError('hasSmallCase')  ? 'text-danger' : 'text-success'">
+                  <i class="fa fa-{{ frmSignup.controls['password'].hasError('required') ||
+                    frmSignup.controls['password'].hasError('hasSmallCase') ? 'times' :
+                    'check' }}"></i>
+            Must contain at least 1 Letter in Small Case!
+          </label>
+          <label class="col mr-bottom-remove" [ngClass]="frmSignup.controls['password'].hasError('required') || frmSignup.controls['password'].hasError('hasSpecialCharacters') ? 'text-danger' : 'text-success'">
+                  <i class="fa fa-{{ frmSignup.controls['password'].hasError('required') ||
+                    frmSignup.controls['password'].hasError('hasSpecialCharacters') ? 'times' :
+                    'check' }}"></i>
+            Must contain at least 1 Special Character!
+          </label> -->
+        </div>
+      }
+    </div>
+
+    <!-- confirm password -->
+    <div class="form-group">
+      <!-- <label for="confirmPassword" [ngClass]="frmSignup.controls['confirmPassword'].invalid ? 'text-danger' : ''">Confirm
+    Password:</label> -->
+    <input formControlName="confirmPassword" type="password" class="form-control" placeholder="Confirm Password">
+    @if (frmSignup.controls['confirmPassword'].touched || frmSignup.controls['confirmPassword'].dirty) {
+      <div class="mr-top" [@enterAnimation]>
+        @if (!frmSignup.controls['confirmPassword'].valid) {
+          <label class="col text-danger mr-bottom-remove">
+            Password do not match
+          </label>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- more inputs for ENTERPRISE plan -->
+  @if (selectedPlan == "ENTERPRISE") {
+    <hr class="info">
+    <!-- requested storage space -->
+    <div class="input-group">
+      <input formControlName="requestedStorageSpace" type="number" class="form-control" placeholder="Select Storage Space">
+      <!-- appended MB -->
+      <span class="input-group-append">
+        <span class="input-group-text">MBs</span>
+      </span>
+    </div>
+    @if (frmSignup.controls["requestedStorageSpace"].touched && !frmSignup.controls["requestedStorageSpace"].valid) {
+      <div class="mr-top mb-3 float-left" [@enterAnimation]>
+        <label class="col text-danger mr-bottom-remove" [@enterAnimation]>
+          Please provide a storage space!
+        </label>
+      </div>
+    }
+    <!-- requested locations -->
+    <div class="form-group mt-3 b-danger">
+      <!-- <label for="confirmPassword" [ngClass]="frmSignup.controls['confirmPassword'].invalid ? 'text-danger' : ''">Confirm
+    Password:</label> -->
+    <input formControlName="requestedLocations" type="number" class="form-control" placeholder="Required Number of Locations">
+    <div class="mr-top" [@enterAnimation]>
+      @if (frmSignup.controls["requestedLocations"].touched && !frmSignup.controls["requestedLocations"].valid) {
+        <label class="col text-danger mr-bottom-remove" [@enterAnimation]>
+          Please input locations required!
+        </label>
+      }
+    </div>
+  </div>
+  <!-- requested locations -->
+  <div class="form-group">
+    <!-- <label for="confirmPassword" [ngClass]="frmSignup.controls['confirmPassword'].invalid ? 'text-danger' : ''">Confirm
+  Password:</label> -->
+  <textarea formControlName="message" class="form-control" rows="5"  placeholder="Any Message (Optional)"></textarea>
+  <!-- <input  type="textarea" class="form-control"> -->
+  <!-- <div class="mr-top" [@enterAnimation]>
+  <label class="col text-danger mr-bottom-remove" *ngIf='frmSignup.controls["requestedLocations"].touched && !frmSignup.controls["requestedLocations"].valid' [@enterAnimation]>
+    Please input locations required!
+  </label>
+</div> -->
+</div>
+}
+<div class="mb-3 text-sm">
+  <span class="text-muted">By clicking Sign Up, I agree to the</span>
+  <a routerLink="/privacy-policy"> Terms of service</a>
+  <span class="text-muted"> and </span>
+  <a routerLink="/privacy-policy">Policy Privacy.</a>
+</div>
+
+<div class="form-group">
+  <button [disabled]="!frmSignup.valid || formSubmitting" type="submit" [ngClass]='(!frmSignup.valid || formSubmitting) ? "btn-dark": "btn-primary"' class="btn btn-block font-weight-bold">
+    <span class='mr-2'>Sign up</span>
+    @if (formSubmitting) {
+      <i class="fa fa-spinner fa-spin" ></i>
+    }
+  </button>
+</div>
+</form>
+<div class="py-4 text-center">
+  <div>Already have an account? <a routerLink="/login" class="text-primary _600">Sign in</a></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

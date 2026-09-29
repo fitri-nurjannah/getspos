@@ -1,0 +1,68 @@
+/* Common style for all slides */
+.slide-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Start hidden but present in DOM */
+    opacity: 0;
+    visibility: hidden; 
+    z-index: 0;
+
+    /* Smooth transition to prevent flicker */
+    transition: opacity 0.4s ease-in-out, visibility 0.4s;
+}
+
+/* The Active Slide */
+.slide-item.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10; /* Bring to front */
+}
+
+button#btnClose {
+  position: fixed;
+  top: 50px;
+  right: 100px;
+  color: white;
+  z-index: 1101;
+}
+button#btnClose mat-icon {
+  height: 48px !important;
+  width: 48px !important;
+  font-size: 48px !important;
+}
+
+/* fullpage container */
+div#main-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1100;
+}
+
+.hide-pdf-off-screen {
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
+}
+.audioElement{
+  display: block;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+/* Styles for YouTube player */
+youtube-player iframe {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

@@ -1,0 +1,15 @@
+<!-- subscription alert message component tag is in app-shared-layouts -->
+
+<!-- http loader -->
+<ngx-ui-loader [fgsSize]="110" [fgsType]="SPINNER.threeStrings"></ngx-ui-loader>
+
+<!-- Message service -->
+<app-toast-container></app-toast-container>
+
+<div
+  [@routeAnimations]="
+    o && o.activatedRouteData && o.activatedRouteData['animation']
+  "
+>
+  <router-outlet #o="outlet"></router-outlet>
+</div>

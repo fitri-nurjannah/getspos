@@ -1,0 +1,11 @@
+/* Optimized CSS */
+.generate-password-text {
+  @apply mt-6 text-[#907eec] ml-[10px] hover:underline cursor-pointer;
+}
+
+/* Material Field Overrides */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-prefix,
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-suffix {
+  top: -3px !important;
+  margin-left: 3px;
+}

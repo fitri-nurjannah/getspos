@@ -1,0 +1,4 @@
+.step-header{
+  @apply justify-start p-4 !important;
+  @apply border border-gray-200 rounded-lg shadow-sm;
+}

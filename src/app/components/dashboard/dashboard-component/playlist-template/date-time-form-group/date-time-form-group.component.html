@@ -1,0 +1,186 @@
+<div [formGroup]="contentFormGroup" class="py-2">
+  <div class="space-y-8">
+
+    <!-- SECTION 1: Interaction & Playback -->
+    <section>
+      <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Playback Settings</h3>
+      <div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+        
+        <!-- Touchscreen Toggle Row -->
+        <div class="p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" 
+            [class.border-b]="!contentFormGroup.get('isTouchscreenMode')?.value && sliderTypes !== 'pptx'"
+            [class.border-gray-50]="true">
+          
+          <!-- Row 1 (Mobile): Icon -->
+          <div class="w-fit p-2 bg-amber-50 rounded-lg">
+            <ng-icon name="heroFingerPrint" size="20" class="text-amber-600"></ng-icon>
+          </div>
+
+          <!-- Row 2 (Mobile): Text -->
+          <div class="flex-1">
+            <p class="text-sm font-semibold text-gray-800">Touchscreen Mode</p>
+            <p class="text-xs text-gray-500">Enable if users will interact with the screen manually</p>
+          </div>
+
+          <!-- Row 3 (Mobile): Toggle -->
+          <div class="flex justify-start">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                formControlName="isTouchscreenMode" 
+                (change)="playbackToggleChanged()"
+                class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                          peer-checked:after:translate-x-full peer-checked:after:border-white 
+                          after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Slide Duration Row (Conditional) -->
+        <!-- Only shows if Touchscreen is OFF and type is NOT pptx -->
+        @if (!contentFormGroup.get('isTouchscreenMode')?.value && sliderTypes !== 'pptx') {
+          <div @enterAnimation class="p-3 sm:p-5 bg-gray-50/50">
+            <div class="max-w-md">
+              <div class="flex items-center gap-2 mb-3">
+                <ng-icon name="heroClock" size="16" class="text-blue-500"></ng-icon>
+                <span class="text-xs font-bold text-gray-600 uppercase tracking-tight">Slide Rotation Interval</span>
+              </div>
+              
+              <mat-form-field appearance="outline" class="w-full bg-white">
+                <mat-label>Time Between Slides</mat-label>
+                <mat-select #timeIntervalBetweenItems formControlName="timeIntervalBetweenItems" (valueChange)="timeIntervalChanged($event)">
+                  <mat-option [value]="5">05 sec</mat-option>
+                  <mat-option [value]="10">10 sec</mat-option>
+                  <mat-option [value]="15">15 sec</mat-option>
+                  <mat-option [value]="30">30 sec</mat-option>
+                  <mat-option [value]="60">01 min</mat-option>
+                  <mat-option [value]="300">05 min</mat-option>
+                  <mat-option [value]="600">10 min</mat-option>
+                  <mat-option [value]="900">15 min</mat-option>
+                  <mat-option [value]="1800">30 min</mat-option>
+                  <mat-option [value]="3600">60 min</mat-option>
+                  <mat-option [value]="'custom'">Custom duration...</mat-option>
+                </mat-select>
+              </mat-form-field>
+          
+              @if (timeIntervalBetweenItems.value == 'custom') {
+                <mat-form-field appearance="outline" class="w-full mt-2 bg-white" @enterAnimation>
+                  <mat-label>Custom Seconds</mat-label>
+                  <input matInput formControlName="customTimeIntervalBetweenItems" type="number" placeholder="e.g. 45" />
+                  <mat-hint>Value between 2 and 1,000,000</mat-hint>
+                </mat-form-field>
+              }
+            </div>
+          </div>
+        } @else if (contentFormGroup.get('isTouchscreenMode')?.value) {
+          <!-- Optional: Info message when touchscreen is on -->
+          <div class="bg-blue-50 border border-blue-100 rounded-xl py-2.5 pl-2.5 pr-4 flex items-center gap-2 w-full">
+            <ng-icon name="ionInformationCircleSharp" size="20"  class="text-blue-600 shrink-0">
+            </ng-icon>
+            <p class="text-[13px] sm:text-sm text-blue-800 leading-snug font-medium">
+              Automatic slide rotation is disabled in Touchscreen Mode.
+            </p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- SECTION 2: Visibility & Schedule -->
+    <section class="space-y-4">
+      <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">Visibility & Schedule</h3>
+      
+      <!-- Date Range Card -->
+      <div class="bg-white border border-gray-100 p-3 sm:p-5 rounded-2xl shadow-sm">
+        <mat-form-field class="w-full" appearance="outline" (click)="datePickerStartDate.open()">
+          <mat-label>Active Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="datePickerStartDate">
+            <input matStartDate formControlName="startDate" placeholder="Start date" />
+            <input matEndDate formControlName="endDate" placeholder="End date" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="datePickerStartDate"></mat-datepicker-toggle>
+          <mat-date-range-picker #datePickerStartDate [touchUi]="true"></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+
+      <!-- Schedule Management -->
+      <div class="bg-white border border-gray-100 p-3 sm:p-5 rounded-2xl shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-semibold text-gray-700">Display Schedule</span>
+          <label class="inline-flex items-center cursor-pointer group">
+            <span class="me-3 text-xs font-bold text-gray-400 group-hover:text-blue-600 transition-colors uppercase">Run 24h</span>
+            <div class="relative">
+              <input formControlName="isWholeTimeSelected" (change)="wholeTimeSelectedChanged()" type="checkbox" class="sr-only peer">
+              <div class="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
+            </div>
+          </label>
+        </div>
+
+        @if (isWholeTimeSelected) {
+          <div @enterAnimation class="bg-green-50 border border-green-100 rounded-xl py-2.5 pl-2.5 pr-4 flex items-center gap-2 w-full">
+            <ng-icon name="heroCheckCircle" size="20" class="text-green-600 shrink-0"></ng-icon>
+            <span class="text-[13px] sm:text-sm text-green-800 font-semibold leading-snug">Running all day on selected days.</span>
+          </div>          
+        } @else {
+          <div [formArrayName]="'scheduledTimes'" class="space-y-3">
+            @for (scheduledTime of contentFormGroup.get('scheduledTimes')['controls']; track $index; let i = $index) {
+              <div @enterAnimation [formGroupName]="i" 
+                class="flex flex-row items-center gap-2 sm:gap-3 bg-gray-50 p-3 sm:p-2 rounded-xl border border-gray-100">
+              
+              <!-- Inputs Grid: Stacked on mobile (grid-cols-1), side-by-side on desktop (sm:grid-cols-2) -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
+                <mat-form-field appearance="outline" class="hide-subscript dense-field w-full">
+                  <input matInput [ngxMatTimepicker]="st" formControlName="startTime" [format]="24" placeholder="Start" />
+                  <ngx-mat-timepicker #st></ngx-mat-timepicker>
+                  <ng-icon matSuffix name="heroClock" class="text-gray-400"></ng-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="hide-subscript dense-field w-full">
+                  <input matInput [ngxMatTimepicker]="et" formControlName="endTime" [format]="24" placeholder="End" />
+                  <ngx-mat-timepicker #et></ngx-mat-timepicker>
+                  <ng-icon matSuffix name="heroClock" class="text-gray-400"></ng-icon>
+                </mat-form-field>
+              </div>
+
+              <!-- Delete Button: shrink-0 prevents it from being squished -->
+              @if (contentFormGroup.controls['scheduledTimes']['controls'].length > 1) {
+                <div class="flex-shrink-0">
+                  <button type="button" (click)="removeScheduledTimesFromForm(i)" 
+                    class="text-gray-400 hover:text-red-500 p-2 mb-3 transition-colors duration-200">
+                    <ng-icon name="heroTrash" size="18"></ng-icon>
+                  </button>
+                </div>
+              }
+            </div>
+            }
+
+            @if (contentFormGroup.get('scheduledTimes')?.hasError('wrongTimes')) {
+              <div class="bg-red-50 border border-red-100 rounded-xl py-2.5 pl-2.5 pr-4 flex items-start gap-2 w-full animate-pulse">
+                <!-- shrink-0 is vital here as errors often wrap on small screens -->
+                <ng-icon 
+                  name="ionWarning" 
+                  size="20" 
+                  class="text-red-600 mt-0.5 shrink-0">
+                </ng-icon>
+                
+                <p class="text-[13px] sm:text-sm text-red-800 leading-snug font-medium">
+                  Time periods cannot overlap with each other.
+                </p>
+              </div>
+            }
+            <button type="button" (click)="addScheduledTimesIntoForm()" class="w-full py-2 border-2 border-dashed border-gray-200 rounded-xl text-xs font-bold text-gray-500 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 transition-all uppercase tracking-widest">
+              + Add Another Time Window
+            </button>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</div>
+<div class="flex flex-col-reverse sm:flex-row gap-3 mt-4 sm:mt-2 items-center justify-between">
+  <button class="!w-full sm:!w-auto btn btn-black btn-md" cdkStepperPrevious>Back</button>
+  <button class="!w-full sm:!w-auto btn btn-primary btn-md" cdkStepperNext>Next</button>
+</div>

@@ -1,0 +1,313 @@
+<!-- gets data dynamically if user is not master -->
+@if (!isMaster) {
+<ng-container appSocketData></ng-container>
+}
+
+<!-- Main START-->
+<div class="section-background grid w-full space-y-4 ">
+  <div class="grid grid-flow-col gap-4 overflow-x-auto">
+    <div class="content flex flex-col w-max sm:w-full justify-between gap-4">
+      <div>
+        <p class="title">Actions</p>
+      </div>
+      <div class="flex gap-4">
+        <div class="flex gap-2">
+          @if (isMaster) {
+            <!--
+          <a (click)="openDialog('create', 'mix')" class="btn btn-black">
+            <ng-icon name="lucideHardDriveUpload" />
+            Create Playlist
+          </a>
+          -->
+          <a (click)="openTemplateDialog()" class="btn btn-black">
+            <ng-icon name="lucideHardDriveUpload" />
+            Create Playlist
+          </a>
+          }
+          @if (!isMaster) {
+          <a routerLink="/dashboard/active-slider" class="btn btn-black">
+            <ng-icon name="heroPlayCircleSolid" />
+            Start Contents
+          </a>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="order-first md:order-none content flex flex-col w-max sm:w-full justify-between gap-4">
+      <p class="title">Summary</p>
+      @if (!userDetails?.isAdmin && userDetails?.subAccount == 'master') {
+      <div class="flex-row gap-6">
+        <div class="flex mb-4">
+          <app-user-limits-table [oneLinedSpacedLimits]="true" [showSubAccountLimits]="true"></app-user-limits-table>
+        </div>
+        <mat-divider></mat-divider>
+      </div>
+      }
+      <div class="flex gap-6">
+        <div class="flex flex-col gap-2">
+          <p class="text-gray-600">Total sliders</p>
+          <p class="text-3xl font-bold text-primary">
+            {{
+            fetchedIndexData?.activePlaylists +
+            fetchedIndexData?.scheduledPlaylists +
+            fetchedIndexData?.expiredPlaylists
+            }}
+          </p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <p class="text-gray-600">Active</p>
+          <p class="text-3xl font-bold text-primary">
+            {{ fetchedIndexData?.activePlaylists }}
+          </p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <p class="text-gray-600">Scheduled</p>
+          <p class="text-3xl font-bold text-primary">
+            {{ fetchedIndexData?.scheduledPlaylists }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="content flex grow flex-col w-max sm:w-full gap-4">
+      <p class="title">Account</p>
+      <p>{{ $safeNavigationMigration(fetchedIndexData?.user?.email) | lowercase }}</p>
+      @if (isMaster) {
+      <a routerLink="/change-password" class="btn btn-black">
+        <ng-icon name="ionFingerPrint" />
+        <span>Change password</span>
+      </a>
+      }
+    </div>
+  </div>
+
+  <!-- Playlist Tab -->
+  <div class="content w-full">
+    <div class="playlist-tab border-b border-gray-200">
+      <ul class="flex flex-wrap -mb-px text-center">
+        <li class="me-2">
+          <a class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+            (click)="tabStatus = 'active'" [ngClass]="tabStatus == 'active' ? 'active' : ''">
+            Active
+            <span
+              class="inline-flex items-center justify-center w-5 h-4 text-xs text-white font-semibold bg-primary rounded-full">{{
+              fetchedIndexData?.activePlaylists }}</span>
+          </a>
+        </li>
+        <li class="me-2">
+          <a class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+            (click)="tabStatus = 'scheduled'" [ngClass]="tabStatus == 'scheduled' ? 'active' : ''">
+            Scheduled
+            <span
+              class="inline-flex items-center justify-center w-5 h-4 text-xs text-white font-semibold bg-primary rounded-full">{{
+              fetchedIndexData?.scheduledPlaylists }}</span>
+          </a>
+        </li>
+        <li class="me-2">
+          <a class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+            (click)="tabStatus = 'expired'" [ngClass]="tabStatus == 'expired' ? 'active' : ''">
+            Expired
+            @if (fetchedIndexData?.expiredPlaylists > 0) {
+            <span
+              class="inline-flex items-center justify-center w-5 h-4 text-xs text-white font-semibold bg-negative rounded-full">{{
+              fetchedIndexData?.expiredPlaylists }}</span>
+            }
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- Tab Body -->
+    <div class="py-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        @for (playlist of playlists; track $index) {
+        @if (
+        tabStatus
+        ? playlist.status == tabStatus
+        : playlist.status == 'active'
+        ) {
+        <div>
+          <div class="item rounded-t-3xl">
+            @if (playlist.computedCoverImages) {
+            <div class="relative aspect-[4/3] overflow-hidden rounded-t-3xl bg-white group">
+              
+              <a routerLink="/slideshow/{{ playlist.id }}/files" class="absolute inset-0">
+                
+                <!-- CASE 1: Split View (2 or more images) -->
+                @if (playlist.computedCoverImages && playlist.computedCoverImages.length >= 2) {
+                  <div class="absolute inset-0 bg-white">
+                    <!-- Left Side (Aggressive Slant) -->
+                    <!-- Top edge ends at 70%, Bottom edge ends at 30% -->
+                    <div 
+                      class="absolute inset-0 bg-cover bg-center [clip-path:polygon(0_0,_70%_0,_30%_100%,_0_100%)]"
+                      [style.background-image]="'url(' + playlist.computedCoverImages[0] + ')' | domSecurePipe: 'style'">
+                    </div>
+                    
+                    <!-- Right Side (Aggressive Slant) -->
+                    <!-- Starts 2px to the right of the first image to create the gap -->
+                    <div 
+                      class="absolute inset-0 bg-cover bg-center [clip-path:polygon(calc(70%+2px)_0,_100%_0,_100%_100%,_calc(30%+2px)_100%)]"
+                      [style.background-image]="'url(' + playlist.computedCoverImages[1] + ')' | domSecurePipe: 'style'">
+                    </div>
+                  </div>
+                } 
+                
+                <!-- CASE 2: Single Image fallback -->
+                @else if (playlist.computedCoverImages && playlist.computedCoverImages.length === 1) {
+                  <div class="h-full w-full bg-cover bg-center" 
+                    [style.background-image]="'url(' + playlist.computedCoverImages[0] + ')' | domSecurePipe: 'style'">
+                  </div>
+                }
+            
+                <!-- CASE 3: No Images -->
+                @if (!playlist.computedCoverImages || playlist.computedCoverImages.length === 0) {
+                  <div class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                    <ng-icon name="ionImageOutline" class="text-gray-400 text-3xl" />
+                  </div>
+                }
+              </a>
+            
+              <!-- Play button overlay (Existing logic adapted to Tailwind) -->
+              @if (isMaster) {
+                <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <a routerLink="/dashboard/play/{{ playlist.id }}" class="text-white text-5xl pointer-events-auto">
+                      <ng-icon name="heroPlayCircleSolid" />
+                    </a>
+                </div>
+              }
+            
+              <!-- Bottom Name Overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2 pointer-events-none">
+                <span class="text-md block text-white font-normal truncate">{{ playlist.name }}</span>
+              </div>
+            </div>
+            }
+            <!-- play button overlay -->
+            <div class="item-overlay full hover:cursor-pointer">
+              @if (isMaster) {
+              <div class="preview">
+                <a routerLink="/dashboard/play/{{ playlist.id }}" pTooltip="Preview"
+                  tooltipPosition="bottom" class="text-4xl p-1">
+                  <ng-icon name="heroPlayCircleSolid" />
+                </a>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="relative p-4 border rounded-b-3xl">
+            <!-- Edit button -->
+            @if (isMaster) {
+            <a class="absolute right-4 top-4 text-gray-400 hover:text-gray-600" data-backdrop="static"
+              data-keyboard="false" [matMenuTriggerFor]="contextMenu">
+              <ng-icon name="ionSettingsSharp" />
+            </a>
+            }
+            <mat-menu #contextMenu="matMenu" (onMenuClose)="onContextMenuClose()">
+              <ng-template matMenuContent let-item="item">
+                <div style="width: 200px">
+                  <button mat-menu-item (click)="openBlockModal('edit', 'mix', playlist, playlist.template)">
+                    <div class="flex items-center gap-3">
+                      <ng-icon name="heroPencilSquare" size="1.2rem" class="text-gray-800"></ng-icon>
+                      <span>Edit</span>
+                    </div>
+                  </button>
+                  <button mat-menu-item (click)="openDeleteModal(playlist.id)">
+                    <div class="flex items-center gap-3 text-red-600">
+                      <ng-icon name="heroTrash" size="1.2rem"></ng-icon>
+                      <span>Delete</span>
+                    </div>
+                  </button>                  
+                </div>
+              </ng-template>
+            </mat-menu>
+            @if (playlist.primaryBlock) {
+            <div>
+              <!-- startDate & endDate -->
+              <div class="mb-2 text-sm text-gray-600">
+                <span class="flex items-center gap-2">
+                  <ng-icon name="ionCalendarSharp" />
+                  <div>
+                    <span pTooltip="Start Date" tooltipPosition="bottom">{{ playlist.primaryBlock.startDate | date: 'shortDate'
+                      }}</span>
+                    -
+                    <span pTooltip="End Date" tooltipPosition="bottom">{{ playlist.primaryBlock.endDate | date: 'shortDate'
+                      }}</span>
+                  </div>
+                </span>
+              </div>
+              <!-- scheduled times -->
+              @for (scheduledTime of playlist.primaryBlock.playlistschedules; track $index) {
+              <div>
+                <!-- selected whole day -->
+                @if (
+                (scheduledTime.startTime | date:'HH:mm') == '00:00' &&
+                (scheduledTime.endTime | date:'HH:mm') == '23:59'
+                ) {
+                <div class="text-sm font-medium text-gray-800">
+                  <span class="flex items-center gap-2" pTooltip="Time Duration" tooltipPosition="bottom">
+                    <ng-icon name="ionTimeOutline" />
+                    <span>Whole Day</span>
+                  </span>
+                </div>
+                }
+                @else {
+                <!-- start time -->
+                <div>
+                  <span class="flex items-center gap-2">
+                    <ng-icon name="ionTimeOutline" />
+                    <div>
+                      <span pTooltip="Start Time" tooltipPosition="bottom">{{ scheduledTime.startTime | date:'HH:mm' }}</span>
+                      -
+                      <span pTooltip="End Time" tooltipPosition="bottom">{{ scheduledTime.endTime | date:'HH:mm' }}</span>
+                    </div>
+                  </span>
+                </div>
+                }
+              </div>
+              }
+            </div>
+            }
+          </div>
+        </div>
+        }
+        }
+      </div>
+    </div>
+    <!-- End Tab Body -->
+  </div>
+  <!-- End Tailwind Playlist Tab -->
+</div>
+
+<!-- modal for delete playlist -->
+@if (showDeleteModal) {
+<div class="tw-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+  <div class="relative w-full max-w-md md:max-w-lg mx-auto shadow-2xl rounded-2xl bg-white flex flex-col max-h-[90vh] overflow-hidden border">
+    <!-- Body -->
+    <div class="p-8 text-center">
+      <!-- Icon in a soft red circle -->
+      <div class="mx-auto w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
+        <ng-icon name="heroTrash" class="text-red-500 text-3xl"></ng-icon>
+      </div>
+      
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Are you sure?</h3>
+      <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+        This action will permanently delete the playlist and cannot be undone.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-5 sm:px-6 py-4 bg-gray-50 flex flex-col-reverse sm:flex-row gap-3 justify-end border-t border-gray-100">
+      <button 
+        (click)="showDeleteModal = false"
+        class="!w-full sm:!w-fit btn btn-black !py-3 sm:!py-2 p-btn-small">
+        Cancel
+      </button>
+      <button 
+        (click)="deletePlaylist()"
+        class="!w-full sm:!w-fit btn btn-danger !bg-red-600 !text-white !py-3 sm:!py-2 p-btn-small shadow-lg shadow-red-500/20 active:scale-95 transition-all">
+        Delete Now
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<router-outlet></router-outlet>

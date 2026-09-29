@@ -1,0 +1,68 @@
+/*
+Custom css
+*/
+
+/* Creating a globle class for margins */
+.mr-left {
+    margin-left: 5px !important;
+}
+
+.mr-bottom {
+    margin-bottom: 5px !important;
+}
+.mr-top {
+    margin-top: 5px !important;
+}
+.mr-right {
+    margin-right: 5px !important;
+}
+.mr-bottom-remove {
+    margin-bottom: 0px !important;
+}
+
+
+
+/* Making loading bar on the top more bold */
+div.pace-progress {
+    height: 5px !important;
+}
+
+/* For showing the ag-grid cell height to fit with the content */
+.cell-wrap-text {
+    white-space: normal !important;
+}
+
+/* cell coloring of HSVD cells */
+.cell-HSVD {
+    background-color: rgb(252, 239, 223);
+}
+
+.cell-consecutiveBParty {
+    background-color: #dde9f5;
+}
+
+.cell-partyAWithExceeding {
+    background-color: #ffdbdf;
+}
+.cell-partyAWithMatching {
+    background-color: #e3ffdb;
+}
+.cell-sd {
+    background-color: #e9d8ff;
+}
+
+/* Changing background color of aside */
+/* .app-aside {
+    background-color: #1e2835 !important;
+} */
+
+/* Title of the Dialogs */
+.mat-dialog-title {
+    font-family: inherit !important;
+    font-size: 22px !important;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 0;
+}

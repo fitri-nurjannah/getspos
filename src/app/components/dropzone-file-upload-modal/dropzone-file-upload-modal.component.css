@@ -1,0 +1,13 @@
+.dropzone-modal-container .modal {
+    overflow:auto;
+}
+::ng-deep .dropzone-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: #e5e7eb !important; /* gray-200 */
+}
+
+::ng-deep .dz-message {
+    @apply !rounded-2xl !bg-gray-50 !m-0 !border-none text-gray-400 font-semibold !w-full !max-w-full;
+}

@@ -1,0 +1,326 @@
+@if (isMaster) {
+  <div (contextmenu)="onContextMenu($event, 'none')" class="section-background relative" #contextMenuContainer>
+    
+    <!-- Main Content Area -->
+    <div class="relative bg-white rounded-lg selection-area content w-full border-none shadow-none" cdkDropListGroup>
+      <div class="p-4 pb-6" cdkDropList cdkDropListSortingDisabled>
+        
+        <!-- Top Action Section -->
+        @if (!isInSelectModal) {
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 mb-6">
+            <div class="w-full lg:w-auto pb-1">
+              <app-user-limits-table class="min-w-full"></app-user-limits-table>
+            </div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 w-full lg:w-auto">
+              <button
+                class="btn btn-primary !w-full sm:!w-fit overflow-hidden"
+                (click)="openFolderDialog(true)"
+              >
+                <ng-icon name="heroFolderPlus"></ng-icon>
+                <span class="truncate text-sm sm:text-base">New Folder</span>
+              </button>
+
+              <button
+                (click)="openUploadFileModal()"
+                class="btn btn-primary !w-full sm:!w-fit !px-3 transition-all"
+              >
+                <ng-icon name="lucideUpload" class="shrink-0" size="1.2rem"></ng-icon>
+                <span class="truncate text-sm sm:text-base">Upload</span>
+              </button>
+
+            </div>
+          </div>
+        }
+
+        @if (!isAdmin && !isInSelectModal) { <hr class="border-gray-100" /> }
+        
+        <app-breadcrumb-menu
+          [parentFolderId]="currentParentFolderId"
+          (breadcrumbMenuChangedEmitter)="breadcrumbMenuChanged($event)"
+        ></app-breadcrumb-menu>
+        
+        <hr class="border-gray-100" />
+
+        <!-- Note -->
+        <div class="flex py-2 sm:justify-end">
+          <span class="text-danger text-xs sm:text-sm sm:text-right">
+            Note: Please right click on an item to see options
+          </span>
+        </div>
+
+        <!-- Selection Bar -->
+        @if (!isInSelectModal && (arrayOfFiles?.length !== 0 || arrayOfFolders?.length !== 0)) {
+          <!-- 1. Remove justify-between and use sm:justify-end -->
+          <div class="flex flex-col sm:items-center sm:justify-end gap-4 pt-4 mb-6">
+            
+            <!-- 2. Added sm:ml-auto and sm:w-fit to force it to the right side -->
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-fit sm:ml-auto">
+              
+              <!-- Select All Dropdown -->
+              <div (mouseenter)="toggleDropdown(true)" (mouseleave)="toggleDropdown(false)" class="relative w-full sm:w-auto">
+                <button (click)="updateCheckbox(!allChecked)" class="btn btn-small btn-primary !w-full sm:w-fit duration-300">
+                  @if (!allChecked && !partialChecked) { <ng-icon name="matCheckBoxOutlineBlankOutline"></ng-icon> }
+                  @if (allChecked) { <ng-icon name="matCheckBoxOutline"></ng-icon> }
+                  @if (partialChecked && !allChecked) { <ng-icon name="matIndeterminateCheckBoxOutline"></ng-icon> }
+                  <span> Select All</span>
+                </button>
+                
+                <div
+                  class="selectAllDropdown absolute left-0 sm:left-auto sm:right-0 w-full sm:w-fit z-50 bg-white rounded-lg shadow-xl border border-gray-200"
+                  [ngClass]="{ 'opacity-100 visible': isDropdownActive, 'opacity-0 invisible': !isDropdownActive }"
+                >
+                  <ul class="rounded-lg bg-white overflow-hidden">
+                    @if (arrayOfFiles?.length !== 0) {
+                      <li (click)="updateCheckboxFile(!allCheckedFile)" class="flex gap-2 items-center p-3 hover:bg-gray-100 cursor-pointer">
+                        <ng-icon [name]="(allCheckedFile || allChecked) ? 'matCheckBoxOutline' : 'matCheckBoxOutlineBlankOutline'"></ng-icon>
+                        <span class="text-sm">Files</span>
+                      </li>
+                    }
+                    @if (arrayOfFolders?.length !== 0) {
+                      <li (click)="updateCheckboxFolder(!allCheckedFolder)" class="flex gap-2 items-center p-3 hover:bg-gray-100 cursor-pointer border-t">
+                        <ng-icon [name]="(allCheckedFolder || allChecked) ? 'matCheckBoxOutline' : 'matCheckBoxOutlineBlankOutline'"></ng-icon>
+                        <span class="text-sm">Folders</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Delete Button -->
+              <button
+                [disabled]="!allCheckedFile && !partialCheckedFile && !allCheckedFolder && !partialCheckedFolder"
+                class="btn btn-small btn-danger !w-full sm:!w-auto"
+                (click)="openDeleteConfirmation()"
+                (mousedown)="preventMouseDown($event)"
+              >
+                <ng-icon name="heroTrash"></ng-icon>
+                <span> Delete </span>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Grid Section -->
+        @if (arrayOfFiles?.length > 0 || arrayOfFolders?.length > 0) {
+          <app-item-select class="block w-full min-h-[500px]"
+            (allCheckedChange)="getAllChecked($event)"
+            (partialCheckedChange)="getPartialChecked($event)"
+            (allCheckedFileChange)="getAllCheckedFile($event)" (partialCheckedFileChange)="getPartialCheckedFile($event)"
+            (allCheckedFolderChange)="getAllCheckedFolder($event)"
+            (partialCheckedFolderChange)="getPartialCheckedFolder($event)" (mouseDown)="closePopover()">
+            
+            <!-- Folders -->
+            @if (arrayOfFolders?.length > 0) {
+              <div class="mb-2"><b>Folders</b></div>
+              <!-- Grid: 2 cols on mobile, 4 on tablet, 6 on desktop -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+                @for (folder of arrayOfFolders; track folder.id; let i = $index) {
+                  <div [@onlyEnterAnimation]>
+                    <div
+                      class="relative bg-white rounded-lg text-ellipsis m-0"
+                      cdkDrag
+                      (cdkDragDropped)="drop('folder')"
+                      (cdkDragStarted)="dragStarted(folder, selectedItem)"
+                      [cdkDragDisabled]="disableDragAndMove"
+                      (contextmenu)="onContextMenu($event, 'folder', folder, folderElement, selectedItem)"
+                      (dblclick)="folderDblClick(folder.id)"
+                      (mousedown)="preventMouseDown($event)"
+                      #folderElement
+                      [appItemSelect]="folder"
+                      #selectedItem="appItemSelect"
+                      (click)="onItemClick(folder, selectedItem, $event)"
+                      [ngStyle]="(selectedItem?.selected && isDragStarted) ? { opacity: 0.2 } : {}"
+                    >
+                      <div class="folder-item flex items-center text-sm sm:text-base">
+                        <ng-icon name="heroFolder" class="shrink-0"></ng-icon>
+                        <span class="truncate ml-2">{{ folder.name }}</span>
+                      </div>
+
+                      <div *cdkDragPreview class="relative p-1 !overflow-visible flex items-center gap-3 bg-white border-2 border-primary rounded-xl shadow-2xl pointer-events-none">
+                        
+                        <div class="relative flex-none inline-flex items-center justify-center">
+                          <ng-icon name="heroFolder" class="text-yellow-500 text-xl ml-2"></ng-icon>
+                        </div>
+                        
+                        <div class="flex flex-col min-w-0">
+                          <span class="text-xs text-gray-800 truncate">{{ folder.name }}</span>
+                          <span class="text-[9px] text-gray-400 uppercase font-semibold mr-2">Moving Folder</span>
+                        </div>
+                        @if (selectedItems.length > 1) {
+                          <div class="w-6 h-6 inline-flex absolute -top-3 -right-3 z-[100] bg-red-600 text-white text-xs font-black items-center justify-center rounded-full border-2 border-white shadow-lg">
+                            {{ selectedItems.length }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Files Section -->
+            @if (arrayOfFiles?.length > 0) {
+              <div class="mb-2"><b>Files</b></div>
+              <!-- Note: items-start ensures that cards don't stretch vertically to match the tallest one in the row -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 items-start">
+                @for (file of arrayOfFiles; track file.id; let i = $index) {
+                  <div [@onlyEnterAnimation]>
+                    <div
+                      class="relative bg-white rounded-xl m-0 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                      cdkDrag
+                      (cdkDragStarted)="dragStarted(file, selectedItem)"
+                      (cdkDragDropped)="drop('file')"
+                      [cdkDragDisabled]="disableDragAndMove"
+                      (contextmenu)="onContextMenu($event, 'file', file, fileElem, selectedItem)"
+                      #fileElem
+                      [appItemSelect]="file"
+                      #selectedItem="appItemSelect"
+                      (mousedown)="preventMouseDown($event)"
+                      (click)="onItemClick(file, selectedItem, $event)"
+                      [ngStyle]="(selectedItem?.selected && isDragStarted) ? { opacity: 0.2 } : {}"
+                      style="border: 1px solid #00000017"
+                    >
+                      <!-- Image Container: Removed aspect-square -->
+                      <div class="image relative bg-gray-50 flex items-center justify-center">
+                        
+                        <!-- 
+                          1. w-full h-auto: Key to maintaining original aspect ratio 
+                          2. max-h: Prevents extremely tall images from breaking the grid layout 
+                        -->
+                        <img 
+                          [src]="file | fileThumbnail" 
+                          class="w-full h-auto max-h-[250px] object-cover block" 
+                        />
+                        
+                        @if (selectedItem?.selected) {
+                          <!-- Overlay adapted to dynamic height -->
+                          <div class="itemCheckedPreview absolute inset-0 bg-primary/20 flex items-center justify-center backdrop-blur-[1px]">
+                            <ng-icon class="text-white" size="4rem" name="heroCheckSolid"></ng-icon>
+                          </div>
+                        }
+                      </div>
+
+                      <!-- File Label Area -->
+                      <div class="p-2 flex items-center gap-2 bg-white">
+                        <span class="shrink-0 flex items-center">
+                          @let icon = file.type | fileIcon;
+                          <ng-icon [name]="icon.name" [class]="icon.colorClass"></ng-icon>
+                        </span>
+                        <span class="truncate text-[11px] font-medium text-gray-700">{{ file.originalName }}</span>
+                      </div>
+
+                      <!-- Added 'p-4' and '!overflow-visible' -->
+                      <div *cdkDragPreview class="relative p-1 !overflow-visible flex items-center gap-3 bg-white border-2 border-primary rounded-xl shadow-2xl pointer-events-none">
+                        
+                        <div class="relative w-12 h-12 flex-none items-center justify-center">
+                          <div class="w-full h-full overflow-hidden rounded-lg bg-gray-50 border border-gray-100">
+                              <img [src]="file | fileThumbnail" class="w-full h-full object-cover" />
+                          </div>
+                        </div>
+
+                        <div class="flex flex-col min-w-0 mr-2">
+                          <span class="text-xs text-gray-800 truncate">{{ file.originalName }}</span>
+                          <div class="flex items-center gap-1 text-[9px] text-gray-400 uppercase font-semibold">
+                            <ng-icon [name]="getFileIcon(file)" class="text-[12px]"></ng-icon>
+                            <span>Moving {{ selectedItems.length }} items</span>
+                          </div>
+                        </div>
+                        
+                        @if (selectedItems.length > 1) {
+                          <div class="w-6 h-6 inline-flex absolute -top-3 -right-3 z-[100] bg-red-600 text-white text-xs font-black items-center justify-center rounded-full border-2 border-white shadow-lg">
+                            {{ selectedItems.length }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </app-item-select>
+        }
+
+        <!-- Empty State -->
+        @if (arrayOfFiles?.length == 0 && arrayOfFolders?.length == 0) {
+          <div class="flex flex-col items-center justify-center py-12 px-4 text-center w-full">
+            <!-- Icon Container -->
+            <div class="relative mb-6">
+              <!-- Decorative background glow -->
+              <div class="absolute inset-0 scale-150 bg-indigo-50 rounded-full blur-2xl opacity-50"></div>
+              
+              <div class="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-white border border-gray-100 rounded-3xl shadow-sm">
+                <ng-icon 
+                  name="heroCursorArrowRays" 
+                  class="text-indigo-500/80" 
+                  size="3rem"
+                ></ng-icon>
+              </div>
+            </div>
+          
+            <!-- Text -->
+            <h5 class="font-bold text-gray-800 text-base sm:text-lg">No files or folders found</h5>
+            <p class="text-sm text-gray-500 mt-1 max-w-[280px]">
+              This folder is empty. <span class="hidden sm:inline">Right click</span>
+              <span class="sm:hidden text-indigo-600 font-medium">Long press</span> 
+              anywhere to see options.
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- context menu -->
+    <div style="visibility: hidden; position: absolute" [style.left]="contextMenuPosition.x"
+      [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu"></div>
+    <mat-menu #contextMenu="matMenu" (onMenuClose)="onContextMenuClose()">
+      <ng-template matMenuContent let-item="item">
+        <div style="width: 200px">
+          <!-- create folder  -->
+          @if (contextMenuFor != 'folder') {
+            <button mat-menu-item (click)="openFolderDialog(true)">
+              <div class="flex items-center gap-3">
+                <ng-icon name="heroFolderPlus" size="1.2rem" class="text-gray-800"></ng-icon>
+                <span>Create Folder</span>
+              </div>
+            </button>
+          }
+          <!-- add content  -->
+          <button [hidden]="contextMenuFor == 'folder'" mat-menu-item (click)="openUploadFileModal()">
+            <div class="flex items-center gap-3">
+              <ng-icon name="heroPlus" size="1.2rem" class="text-gray-800"></ng-icon>
+              <span>Add Content</span>
+            </div>
+          </button>
+          <!-- move to  -->
+          @if (contextMenuFor != 'none' && !isInSelectModal) {
+          <button mat-menu-item (click)="moveTo()">
+            <div class="flex items-center gap-3">
+              <ng-icon name="heroArrowsRightLeft" size="1.2rem" class="text-gray-800"></ng-icon>
+              <span>Move To</span>
+            </div>
+          </button>
+          }
+          <!-- rename folder  -->
+          @if (contextMenuFor == 'folder' && selectedItems.length == 1) {
+            <button mat-menu-item (click)="openFolderDialog(false)">
+              <div class="flex items-center gap-3">
+                <ng-icon name="heroPencilSquare" size="1.2rem" class="text-gray-800"></ng-icon>
+                <span>Rename</span>
+              </div>
+            </button>
+          }
+          <!-- delete folder  -->
+          <button [hidden]="contextMenuFor == 'none'" mat-menu-item (click)="openDeleteConfirmation()">
+            <div class="flex items-center gap-3 text-red-600">
+              <ng-icon name="heroTrash" size="1.2rem"></ng-icon>
+              <span>Delete</span>
+            </div>
+          </button>
+        </div>
+      </ng-template>
+    </mat-menu>
+  </div>
+}
+
+<app-move-to [parentFolderId]="currentParentFolderId"
+  (moveToResultEmitter)="moveToResultEmitterCatch($event)"></app-move-to>

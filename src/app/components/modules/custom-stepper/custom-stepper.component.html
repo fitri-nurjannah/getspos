@@ -1,0 +1,150 @@
+<section class="w-full">
+  <header class="step-header mb-4 border-b border-gray-100 pb-4">
+    <!-- flex-wrap allows steps to drop to the next line on very small phones -->
+    <div
+      class="flex flex-wrap items-center justify-start gap-y-4 gap-x-2 sm:gap-x-4"
+    >
+      <!-- REUSABLE TEMPLATE FOR LABEL + ERROR -->
+      <ng-template #labelContent let-step="step">
+        <div class="flex flex-col justify-center ml-2 text-left">
+          <!-- The Label: Responsive text sizes -->
+          <div class="leading-tight text-sm sm:text-base whitespace-nowrap">
+            @if (step.stepLabel) {
+              <ng-container
+                [ngTemplateOutlet]="step.stepLabel.template"
+              ></ng-container>
+            } @else {
+              {{ step.label }}
+            }
+          </div>
+
+          <!-- The Error Message -->
+          @if (step.hasError) {
+            <span
+              class="text-[10px] text-red-600 font-normal animate-pulse absolute -bottom-4"
+            >
+              {{ getStepError(step) }}
+            </span>
+          }
+        </div>
+      </ng-template>
+      <!-- END TEMPLATE -->
+
+      @for (step of steps; track step; let i = $index) {
+        <!-- FIRST GROUP (Step 1 & 2) -->
+        @if (i < 2) {
+          <div
+            class="relative inline-flex items-center font-medium cursor-pointer transition-colors"
+            (click)="onClick(i)"
+            [ngClass]="{
+              'text-red-600': step.hasError,
+              'text-primary': !step.hasError && i <= selectedIndex,
+              'text-gray-400': !step.hasError && i > selectedIndex,
+            }"
+          >
+            <span
+              class="inline-flex items-center justify-center w-6 h-6 text-sm border rounded-full shrink-0 transition-all"
+              [ngClass]="{
+                'border-red-600 bg-red-50': step.hasError,
+                'border-primary bg-primary/10':
+                  !step.hasError && i <= selectedIndex,
+                'border-gray-300 bg-transparent':
+                  !step.hasError && i > selectedIndex,
+              }"
+            >
+              {{ i + 1 }}
+            </span>
+
+            <ng-container
+              [ngTemplateOutlet]="labelContent"
+              [ngTemplateOutletContext]="{ step: step }"
+            ></ng-container>
+
+            <!-- Double Arrow: Hidden on very small screens if it causes clutter -->
+            @if (i === 0) {
+              <div
+                class="ml-2 text-gray-300 hidden sm:inline-flex items-center"
+              >
+                <ng-icon
+                  name="matKeyboardDoubleArrowRight"
+                  size="1.2em"
+                ></ng-icon>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- SECOND GROUP (Steps for Block A) -->
+        @if (
+          (i === 2 || i === 3) && (selectedIndex === 2 || selectedIndex === 3)
+        ) {
+          <div
+            class="relative inline-flex items-center font-semibold cursor-pointer animate-in fade-in slide-in-from-left-2"
+            (click)="onClick(i)"
+            [ngClass]="{
+              'text-red-600': step.hasError,
+              'text-primary': !step.hasError && i <= selectedIndex,
+              'text-gray-400': !step.hasError && i > selectedIndex,
+            }"
+          >
+            <!-- Block Badge -->
+            @if (i === 2) {
+              <span
+                class="mr-2 px-1.5 bg-blue-100 text-blue-700 text-[10px] rounded font-bold"
+                >BLOCK A</span
+              >
+            }
+
+            <div class="text-gray-300 inline-flex items-center">
+              <ng-icon name="ionRemove" size="1.2em"></ng-icon>
+            </div>
+
+            <ng-container
+              [ngTemplateOutlet]="labelContent"
+              [ngTemplateOutletContext]="{ step: step }"
+            ></ng-container>
+          </div>
+        }
+        <!-- THIRD GROUP (Steps for Block B) -->
+        @if (
+          (i === 4 || i === 5) && (selectedIndex === 4 || selectedIndex === 5)
+        ) {
+          <div
+            class="relative inline-flex items-center font-semibold cursor-pointer animate-in fade-in slide-in-from-left-2"
+            (click)="onClick(i)"
+            [ngClass]="{
+              'text-red-600': step.hasError,
+              'text-primary': !step.hasError && i <= selectedIndex,
+              'text-gray-400': !step.hasError && i > selectedIndex,
+            }"
+          >
+            <!-- Block Badge -->
+            @if (i === 4) {
+              <span
+                class="mr-2 px-1.5 bg-fuchsia-100 text-fuchsia-700 text-[10px] rounded font-bold"
+                >BLOCK B</span
+              >
+            }
+
+            <div class="text-gray-300 inline-flex items-center">
+              <ng-icon name="ionRemove" size="1.2em"></ng-icon>
+            </div>
+
+            <ng-container
+              [ngTemplateOutlet]="labelContent"
+              [ngTemplateOutletContext]="{ step: step }"
+            ></ng-container>
+          </div>
+        }
+      }
+    </div>
+  </header>
+
+  <!-- Step Content: Responsive padding -->
+  <div
+    class="pb-4 sm:pb-6 sm:px-4"
+    [style.display]="selected ? 'block' : 'none'"
+  >
+    <ng-container [ngTemplateOutlet]="selected.content"></ng-container>
+  </div>
+</section>

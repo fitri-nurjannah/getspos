@@ -1,0 +1,154 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --background: #ececf1;
+  --foreground: #141516;
+}
+
+body {
+  overflow-y: scroll;
+  background: var(--background);
+  color: var(--foreground);
+  @apply font-poppins p-4 md:p-6 text-base;
+}
+.section-background {
+    @apply rounded-3xl bg-[#f0f1f2] p-3 md:p-4;
+}
+
+.section-background .content {
+    @apply rounded-2xl bg-white p-4;
+}
+
+.section-background .content .title {
+    @apply text-xl font-light;
+}
+.p-component {
+    @apply font-poppins text-base;
+}
+.p-overflow-hidden {
+    padding-right: 39.5px !important;
+}
+.p-dataview, .p-dataview-content {
+  background: inherit !important;
+  color: inherit !important;
+  border: inherit !important;
+}
+.p-dataview .p-dataview-header {
+  @apply bg-primary rounded-2xl text-white p-3;
+  font-weight: 700;
+}
+.p-dropdown{
+  @apply rounded-lg;
+}
+.p-dropdown .p-component{
+  @apply rounded-lg mt-1;
+}
+.p-dropdown-items p-dropdownitem:first-child, .p-dropdown-items .p-element:first-child .p-highlight{
+  @apply rounded-t-lg rounded-b-none;
+}
+.p-dropdown-items p-dropdownitem:last-child, .p-dropdown-items .p-element:last-child .p-highlight{
+  @apply rounded-b-lg rounded-t-none;
+}
+.p-dropdown:not(.p-disabled).p-focus{
+  @apply shadow-none;
+}
+.p-dropdown-item:not(.p-highlight):not(.p-disabled):hover, .p-dropdown-item:not(.p-highlight):not(.p-disabled).p-focus {
+  border-radius: inherit;
+}
+.p-button.p-button-icon-only{
+  @apply rounded-lg p-2;
+}
+.p-selectbutton .p-button.p-highlight {
+  @apply bg-white text-primary;
+}
+.p-inputtext{
+  @apply p-2 font-normal;
+  font-family: inherit;
+}
+div.modal{
+  z-index: 1050 !important;
+}
+
+.cdk-overlay-container {
+  z-index: 1050 !important;
+}
+
+/* .cdk-overlay-container {
+    z-index: 9999 !important;
+} */
+div.ui-tooltip {
+  z-index: 2004 !important;
+}
+/* taking dynamic dialog in front of create modal */
+p-dynamicdialog {
+    z-index: 1050 !important;
+}
+
+.ng2-pdf-viewer-container,
+.pdfViewer,
+.page,
+.canvasWrapper {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+/* underlines on hover */
+a.hover-underline:hover {
+    text-decoration: underline !important;
+}
+
+/* for making pdf heigth equal to the height of the browser page */
+.ng2-pdf-viewer-container {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.ng2-pdf-viewer-container .pdfViewer .page canvas {
+    margin: auto !important;
+}
+.ng2-pdf-viewer-container .pdfViewer .page {
+    background-color: transparent !important;
+}
+
+/* takes pdf center vertically */
+.ng2-pdf-viewer-container .pdfViewer .page .canvasWrapper {
+    display: flex;
+}
+
+/* taking file upload modal in front of others when creating slider */
+div.modal.fade.show#dropzoneModalForUploadFiles {
+    z-index: 2003 !important;
+}
+
+/* height of table in user management  */
+.ui-table-scrollable-body {
+    height: 450px !important;
+}
+
+/*
+  For Snack bar in file storage 
+**/
+
+/* snack bar  */
+.snack-bar-custom {
+    background-color: #313131 !important;
+    /* background-color: #e8e8e8 !important; */
+    color: white !important;
+}
+
+.snack-bar-custom-error {
+    background-color: #d80d0d !important;
+    color: white !important;
+}

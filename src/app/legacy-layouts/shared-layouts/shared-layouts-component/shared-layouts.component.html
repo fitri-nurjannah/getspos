@@ -1,0 +1,19 @@
+<!-- alert messages of the subscription will be controlled by this component -->
+<div class="app" id="app">
+  <div id="content" class="app-content flex relative" role="main">
+    <div class="flex-1">
+      <app-header-layout></app-header-layout>
+      <app-menu-layout></app-menu-layout>
+      <app-subscription-alert></app-subscription-alert>
+      <div class="content-main " id="content-main">
+        <div class="mt-6">
+          <div [@routeAnimations]="o && o.activatedRouteData && o.activatedRouteData['animation']">
+            <router-outlet #o="outlet"></router-outlet>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer-layout></app-footer-layout>

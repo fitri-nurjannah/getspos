@@ -1,0 +1,40 @@
+div.file-select {
+
+  position: relative;
+  display: inline-block;
+  overflow: auto;
+  width: calc(100% - 16px);
+  min-width: calc(100% - 16px);
+  min-height: 40px;
+  max-width: calc(100% - 16px);
+  max-height: 100%;
+  margin: 8px;
+  border: 2px dashed #aaa;
+  background-color: #eee;
+
+  cursor: pointer;
+
+}
+div.file-select .text-in-fil-select {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  padding: 8px 16px;
+  text-align: center;
+  transform: translateY(-50%);
+
+}
+
+/* dropzone modal css ended */
+
+
+p.info-text {
+  text-align: right !important;
+  margin-left: 15px;
+}
+
+.preview {
+  position: absolute;
+  top: 50%; right: 50%;
+  transform: translate(50%,-50%);
+}

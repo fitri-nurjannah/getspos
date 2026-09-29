@@ -1,0 +1,36 @@
+<!-- 
+  1. overflow-x-auto: Allows swiping on mobile
+  2. whitespace-nowrap: Prevents text from breaking into two lines
+  3. custom-scrollbar: (optional) keeps the UI clean 
+-->
+<nav class="flex items-center overflow-x-auto whitespace-nowrap py-2 custom-scrollbar no-scrollbar" aria-label="Breadcrumb">
+  @for (mi of menuItems; track $index; let i = $index) {
+    <div class="flex items-center flex-none">
+      
+      <!-- Breadcrumb Button -->
+      <button
+        mat-button
+        (click)="menuItemClicked(mi.id)"
+        [disabled]="i == menuItems.length - 1"
+        class="!min-w-0 !px-2 sm:!px-3 transition-colors"
+        [ngClass]="i == menuItems.length - 1 ? 'text-gray-900 font-bold' : 'text-primary hover:bg-primary/5'"
+        >
+        @if (mi.id == null) {
+          <!-- Home Icon -->
+          <ng-icon name="heroHomeSolid" class="text-lg sm:text-xl"></ng-icon>
+        } @else {
+          <!-- Folder Label -->
+          <span class="text-sm sm:text-base">{{ mi.label }}</span>
+        }
+      </button>
+
+      <!-- Separator: Only show if NOT the last item -->
+      @if (i !== menuItems.length - 1) {
+        <span class="flex items-center justify-center text-gray-300 mx-1">
+          <!-- Using a Chevron icon instead of ">" for a more modern look -->
+          <ng-icon name="heroChevronRight" size="14"></ng-icon>
+        </span>
+      }
+    </div>
+  }
+</nav>

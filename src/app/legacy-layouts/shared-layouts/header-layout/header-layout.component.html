@@ -1,0 +1,56 @@
+<!-- Header -->
+<div id="content-header">
+  <nav class="navbar flex w-full shrink-0 items-center justify-center bg-transparent">
+    <div class="flex items-center justify-start">
+      <a href="#!" class="flex items-center gap-2 md:gap-4 uppercase tracking-wider md:tracking-widest">
+        <img src="/assets/images/logo-getspos.png" class="w-7 md:w-10 h-auto" alt="...">
+        GETSPOS
+      </a>
+    </div>
+
+    <div class="flex justify-end items-center gap-4">
+      @if (isAdmin || isMaster) {
+        <div class="hidden md:flex justify-end">
+          <div class="relative">
+            <!-- Dropdown Trigger -->
+            <button
+              class="flex items-center gap-2 text-sm font-medium hover:text-secondary"
+              routerLink="/playlist/status"
+              >
+              Playlists
+              @if (anyUserOnline) {
+                <span class="h-2 w-2 rounded-full bg-green-500"></span>
+              }
+              @if (anyUserOnline) {
+                <span class="h-2 w-2 rounded-full bg-red-500"></span>
+              }
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (!isLoggedIn) {
+        <div class="hover:text-secondary">
+          <a
+            routerLink="/login"
+            class="flex items-center gap-1 text-sm transition-all"
+            >
+            <ng-icon name="ionPower" />
+            Login
+          </a>
+        </div>
+      }
+      @if (isLoggedIn) {
+        <div class="hover:text-secondary">
+          <a
+            (click)="logout()"
+            class="flex items-center gap-1 text-sm transition-all"
+            >
+            <ng-icon name="ionPower" />
+            Logout
+          </a>
+        </div>
+      }
+    </div>
+  </nav>
+</div>

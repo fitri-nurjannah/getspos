@@ -1,0 +1,203 @@
+<!-- 1. Background Overlay -->
+<div
+  class="tw-modal playlist-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+>
+  <!-- 2. Modal Container -->
+  <!-- Added: flex flex-col and overflow-hidden -->
+  <div
+    class="relative w-full max-w-md md:max-w-lg mx-auto shadow-2xl rounded-2xl bg-white flex flex-col max-h-[90vh] overflow-hidden border"
+  >
+    <!-- Fixed Header: Padding adjusted for top/sides -->
+    <div
+      class="px-5 sm:px-8 pt-5 sm:pt-8 pb-4 flex justify-between items-center bg-white z-10"
+    >
+      <h3 class="text-lg sm:text-xl font-semibold leading-6 text-gray-900">
+        Choose Your Template Layout
+      </h3>
+      <button
+        (click)="closeModal(null)"
+        class="text-gray-400 hover:text-gray-600 transition-colors p-1"
+      >
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 3. Scrollable Content Area -->
+    <!-- This area handles the scroll without touching the main container's border radius -->
+    <div class="flex-1 overflow-y-auto px-5 sm:px-8 py-2 custom-scrollbar">
+      <div class="space-y-8 pb-4">
+        <!-- Template Blocks Selection -->
+        <div>
+          <p class="text-sm sm:text-base text-gray-700 font-medium mb-3">
+            Template Blocks:
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                type="radio"
+                class="form-radio accent-primary peer/vertical h-4 w-4 text-blue-600"
+                name="blocks"
+                [value]="1"
+                [(ngModel)]="blockCount"
+                (change)="onBlockChange()"
+              />
+              <span
+                class="ml-2 text-sm sm:text-base text-gray-700 peer-checked/vertical:text-primary font-medium"
+                >1 Block Template</span
+              >
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                type="radio"
+                class="form-radio accent-primary peer/horizontal h-4 w-4 text-blue-600"
+                name="blocks"
+                [value]="2"
+                [(ngModel)]="blockCount"
+                (change)="onBlockChange()"
+              />
+              <span
+                class="ml-2 text-sm sm:text-base text-gray-700 peer-checked/horizontal:text-primary font-medium"
+                >2 Block Template</span
+              >
+            </label>
+          </div>
+        </div>
+
+        <!-- 2 Block Layout (Orientation) -->
+        <div [class.hidden]="blockCount !== 2" class="transition-all">
+          <p class="text-sm sm:text-base text-gray-700 font-medium mb-3">
+            2 Block Layout Orientation:
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                type="radio"
+                class="form-radio accent-primary peer/v-orient h-4 w-4"
+                name="orientation"
+                value="vertical"
+                [(ngModel)]="selectedOrientation"
+              />
+              <span
+                class="ml-2 text-sm sm:text-base text-gray-700 peer-checked/v-orient:text-primary"
+                >Vertical</span
+              >
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                type="radio"
+                class="form-radio accent-primary peer/h-orient h-4 w-4"
+                name="orientation"
+                value="horizontal"
+                [(ngModel)]="selectedOrientation"
+              />
+              <span
+                class="ml-2 text-sm sm:text-base text-gray-700 peer-checked/h-orient:text-primary"
+                >Horizontal</span
+              >
+            </label>
+          </div>
+          @if (selectedOrientation === "vertical") {
+            <p class="text-xs sm:text-sm text-gray-500 mt-2 italic">
+              Content blocks will be stacked one above the other.
+            </p>
+          }
+          @if (selectedOrientation === "horizontal") {
+            <p class="text-xs sm:text-sm text-gray-500 mt-2 italic">
+              Content blocks will be placed side-by-side.
+            </p>
+          }
+        </div>
+
+        <!-- Modern Preview Section -->
+        <div
+          class="bg-gray-50 rounded-lg py-6 flex justify-center items-center border border-dashed border-gray-300"
+        >
+          @if (blockCount === 1) {
+            <div class="border-2 border-white shadow-sm p-2 rounded bg-white">
+              <div
+                class="w-20 h-20 sm:w-24 sm:h-24 bg-fuchsia-200 rounded"
+              ></div>
+              <p
+                class="text-[10px] uppercase tracking-wider font-bold text-gray-400 text-center mt-2"
+              >
+                Preview
+              </p>
+            </div>
+          }
+
+          @if (blockCount === 2) {
+            <div class="space-y-2">
+              @if (selectedOrientation === "vertical") {
+                <div
+                  class="border-2 border-white shadow-sm p-2 rounded bg-white"
+                >
+                  <div
+                    class="w-20 h-10 sm:w-24 sm:h-12 bg-gray-200 mb-1 rounded"
+                  ></div>
+                  <div
+                    class="w-20 h-10 sm:w-24 sm:h-12 bg-gray-300 rounded"
+                  ></div>
+                  <p
+                    class="text-[10px] uppercase tracking-wider font-bold text-gray-400 text-center mt-2"
+                  >
+                    Vertical
+                  </p>
+                </div>
+              }
+
+              @if (selectedOrientation === "horizontal") {
+                <div
+                  class="border-2 border-white shadow-sm p-2 rounded bg-white"
+                >
+                  <div class="flex gap-1">
+                    <div
+                      class="w-10 h-20 sm:w-12 sm:h-24 bg-gray-200 rounded"
+                    ></div>
+                    <div
+                      class="w-10 h-20 sm:w-12 sm:h-24 bg-gray-300 rounded"
+                    ></div>
+                  </div>
+                  <p
+                    class="text-[10px] uppercase tracking-wider font-bold text-gray-400 text-center mt-2"
+                  >
+                    Horizontal
+                  </p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="px-5 sm:px-8 py-5 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 bg-white sm:bg-gray-50/50 border-t"
+    >
+      <button
+        (click)="closeModal(null)"
+        class="!w-full sm:!w-auto px-6 py-2.5 btn btn-black p-btn-small"
+      >
+        Cancel
+      </button>
+      <button
+        (click)="applyTemplate()"
+        [disabled]="!canApply()"
+        class="!w-full sm:!w-auto px-6 py-2.5 disabled:bg-gray-300 disabled:cursor-not-allowed btn btn-primary p-btn-small"
+      >
+        Apply Template
+      </button>
+    </div>
+  </div>
+</div>

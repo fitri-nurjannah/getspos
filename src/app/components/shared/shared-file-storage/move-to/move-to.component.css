@@ -1,0 +1,13 @@
+/* Ensure the popover content doesn't have extra padding */
+::ng-deep .mobile-friendly-popover .p-popover-content {
+    padding: 0 !important;
+}
+
+/* On mobile, ensure the popover doesn't overflow the screen width */
+@media (max-width: 640px) {
+    ::ng-deep .mobile-friendly-popover {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        max-width: 95vw !important;
+    }
+}

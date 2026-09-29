@@ -1,0 +1,69 @@
+.selected-item-container:hover button {
+  visibility: visible;
+}
+
+.selected-item {
+  height: 100%;
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #cccccc;
+
+  border: 1px solid #00000017;
+  /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05), 0 -1px 0px rgba(0, 0, 0, 0.01); */
+  border-radius: 4px;
+}
+
+.selected-item-remove-button-container {
+  position: absolute;
+  right: 3px;
+  top: 0;
+}
+
+.selected-item-remove-button-container button {
+  background-color: #c10202;
+  width: 15px;
+  height: 15px;
+  color: white;
+  border-radius: 20px;
+}
+
+.selected-item-remove-button-container button>mat-icon{
+  margin-top: 14px;
+  margin-left: 0;
+}
+
+.selected-item-remove-button-container button mat-icon {
+  font-size: 10px;
+}
+/* new styles */
+.add-button{
+  height: 100%;
+  width: 100%;
+}
+.cover-img-list {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 0 0.5rem;
+}
+
+.cover-img-box {
+  color: rgba(0, 0, 0, 0.87);
+  display: inline-block;
+  box-sizing: border-box;
+  background: white;
+  text-align: center;
+  font-size: 14px;
+  padding: 0.5rem;
+}
+.item-file {
+  align-items: center;
+  border: solid 1px #ccc;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+              0 2px 2px 0 rgba(0, 0, 0, 0.14),
+              0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
